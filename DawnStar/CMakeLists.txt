@@ -7,23 +7,33 @@ project(${PROJECT_NAME}
         VERSION 1.0
         LANGUAGES CXX    )
 
-find_package(imgui REQUIRED)
-
-
-# find source and header
-file(GLOB_RECURSE HEADERS
-     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/**/*.hpp)
-
+# find source
 file(GLOB_RECURSE SOURCES
      ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/**/*.cpp)
+
+# add subprojects
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glm)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glfw)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glad)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/stb_image)
 
 # make exe file
 add_library(${PROJECT_NAME} STATIC 
             ${SOURCES}
 )
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Linking
+target_link_libraries(${PROJECT_NAME} spdlog)
+target_link_libraries(${PROJECT_NAME} glm)
+target_link_libraries(${PROJECT_NAME} glfw)
+target_link_libraries(${PROJECT_NAME} glad)
+target_link_libraries(${PROJECT_NAME} stb_image)
 
+if(COMMAND target_precompile_headers)
+    target_precompile_headers(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/DawnStar/dspch.hpp)
+endif()
 
 # compile option for c17
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)

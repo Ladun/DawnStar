@@ -1,6 +1,13 @@
 #pragma once
 
 #include <DawnStar/Core/Core.hpp>
+#include <DawnStar/Core/LayerStack.hpp>
+#include <DawnStar/Events/Event.hpp>
+#include <DawnStar/Events/ApplicationEvent.hpp>
+
+#include <DawnStar/Core/Timestep.hpp>
+
+#include <DawnStar/ImGui/ImGuiLayer.hpp>
 
 namespace DawnStar
 {
