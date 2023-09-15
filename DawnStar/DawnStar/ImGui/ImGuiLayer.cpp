@@ -1,6 +1,8 @@
 #include <DawnStar/dspch.hpp>
 #include <DawnStar/ImGui/ImGuiLayer.hpp>
 
+#define IMGUI_IMPL_OPENGL_LOADER_CUSTOM
+#include <glad/glad.h>
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.cpp>
 #include <backends/imgui_impl_opengl3.cpp>
@@ -9,7 +11,6 @@
 
 // TEMPORARY
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
 
 namespace DawnStar
 {
@@ -35,7 +36,6 @@ namespace DawnStar
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-
 		//io.ConfigViewportsNoAutoMerge = true;
 		//io.ConfigViewportsNoTaskBarIcon = true;
 
@@ -61,7 +61,7 @@ namespace DawnStar
 
 		// Setup Platform/Renderer backends
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init("#version 410");
+		ImGui_ImplOpenGL3_Init("#version 140");
 	}
 
 	void ImGuiLayer::OnDetach()

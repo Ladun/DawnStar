@@ -106,12 +106,12 @@ namespace DawnStar
 	public:
 		VertexBuffer(uint32_t size);
 		VertexBuffer(float* vertices, uint32_t size);
-		~VertexBuffer() = default;
+		~VertexBuffer();
 
 		void Bind() const;
 		void Unbind() const;
 
-		const BufferLayout& GetLayout() const;
+		const BufferLayout& GetLayout() const { return m_Layout; }
 		void SetLayout(const  BufferLayout& layout);
 
 		void SetData(const void* data, uint32_t size);
@@ -125,12 +125,12 @@ namespace DawnStar
 	{
 	public:
 		IndexBuffer(uint32_t* indices, uint32_t size);
-		~IndexBuffer() = default;
+		~IndexBuffer();
 
 		void Bind() const;
 		void Unbind() const;
 
-		uint32_t GetCount() const;
+		uint32_t GetCount() const { return m_Count; }
 
 	private:
 		uint32_t m_RendererID;

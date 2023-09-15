@@ -1,5 +1,6 @@
 #pragma once
 
+#include <DawnStar/Core/Window.hpp>
 #include <DawnStar/Core/Core.hpp>
 #include <DawnStar/Core/LayerStack.hpp>
 #include <DawnStar/Events/Event.hpp>
@@ -14,7 +15,9 @@ namespace DawnStar
     class Application 
     {
     public:
-        Application(const std::string& name="DawnStar App");
+        Application(const std::string& name="DawnStar App",
+					uint32_t width=1600,
+					uint32_t height=900);
         virtual ~Application();
 
         void Run();
@@ -25,12 +28,15 @@ namespace DawnStar
         void PushOverlay(Layer* layer);
 
         inline Window& GetWindow() {return *m_Window;}
-
+    
         void Close();
 
         ImGuiLayer* GetImGuiLayer() {return m_ImGuiLayer; }
 
         static Application& Get() {return *s_Instance; }
+	private:
+		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
     private:
         Scope<Window> m_Window;
         ImGuiLayer* m_ImGuiLayer;

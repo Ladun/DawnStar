@@ -2,7 +2,8 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,c++,cmake,c
 
 test/*
-build/**/*
+build/
+
 .vscode/
 
 ### C ###

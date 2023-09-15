@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.13)
  
 set(PROJECT_NAME DawnStar)
  
@@ -9,14 +9,14 @@ project(${PROJECT_NAME}
 
 # find source
 file(GLOB_RECURSE SOURCES
-     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/**/*.cpp)
-
-# add subprojects
+     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/*.cpp)
+# Add libraries
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glm)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glfw)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glad)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/stb_image)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui)
 
 # make exe file
 add_library(${PROJECT_NAME} STATIC 
@@ -25,14 +25,18 @@ add_library(${PROJECT_NAME} STATIC
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Linking
-target_link_libraries(${PROJECT_NAME} spdlog)
-target_link_libraries(${PROJECT_NAME} glm)
-target_link_libraries(${PROJECT_NAME} glfw)
-target_link_libraries(${PROJECT_NAME} glad)
-target_link_libraries(${PROJECT_NAME} stb_image)
+target_link_libraries(${PROJECT_NAME}
+                      spdlog
+                      glm
+                      glfw
+                      glad
+                      stb_image
+                      imgui)
+# target_link_libraries(imgui glfw)
 
 if(COMMAND target_precompile_headers)
     target_precompile_headers(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/DawnStar/dspch.hpp)
+    message("Use precompiled headers")
 endif()
 
 # compile option for c17
