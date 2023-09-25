@@ -10,6 +10,7 @@ project(${PROJECT_NAME}
 # find source
 file(GLOB_RECURSE SOURCES
      ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/*.cpp)
+
 # Add libraries
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glm)
@@ -17,12 +18,15 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glfw)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glad)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/stb_image)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/optick)
 
 # make exe file
 add_library(${PROJECT_NAME} STATIC 
             ${SOURCES}
 )
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC 
+                           ${CMAKE_CURRENT_SOURCE_DIR}
+                           ${CMAKE_CURRENT_SOURCE_DIR}/third-party/entt/include)
 
 # Linking
 target_link_libraries(${PROJECT_NAME}
@@ -31,8 +35,8 @@ target_link_libraries(${PROJECT_NAME}
                       glfw
                       glad
                       stb_image
-                      imgui)
-# target_link_libraries(imgui glfw)
+                      imgui
+                      OptickCore)
 
 if(COMMAND target_precompile_headers)
     target_precompile_headers(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/DawnStar/dspch.hpp)
@@ -40,4 +44,4 @@ if(COMMAND target_precompile_headers)
 endif()
 
 # compile option for c17
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)

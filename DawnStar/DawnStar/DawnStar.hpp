@@ -15,10 +15,9 @@
 
 #include <DawnStar/ImGui/ImGuiLayer.hpp>
 
-// #include <DawnStar/Scene/Scene.hpp>
-// #include <DawnStar/Scene/Entity.hpp>
-// #include <DawnStar/Scene/ScriptableEntity.hpp>
-// #include <DawnStar/Scene/Components.hpp>
+#include <DawnStar/Scene/Scene.hpp>
+#include <DawnStar/Scene/Entity.hpp>
+#include <DawnStar/Scene/Components.hpp>
 
 // ---Renderer-----------------------------
 #include <DawnStar/Renderer/Renderer.hpp>
@@ -26,9 +25,7 @@
 
 #include <DawnStar/Renderer/Buffer.hpp>
 #include <DawnStar/Renderer/Shader.hpp>
-// #include <DawnStar/Renderer/Framebuffer.hpp>
-// #include <DawnStar/Renderer/Texture.hpp>
-// #include <DawnStar/Renderer/SubTexture2D.hpp>
+#include <DawnStar/Renderer/Texture.hpp>
 #include <DawnStar/Renderer/VertexArray.hpp>
 
 #include <DawnStar/Renderer/Camera.hpp>

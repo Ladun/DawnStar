@@ -15,4 +15,6 @@
 
 #include <DawnStar/Core/Log.hpp>
 
-// #include "DawnStar/Debug/Instrumentor.h"
+// #include <DawnStar/Core/Core.hpp>
+
+#include <DawnStar/Debug/Profiler.hpp>

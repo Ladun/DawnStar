@@ -11,3 +11,6 @@
 [submodule "DawnStar/third-party/imgui"]
 	path = DawnStar/third-party/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "DawnStar/third-party/optick"]
+	path = DawnStar/third-party/optick
+	url = https://github.com/bombomby/optick.git

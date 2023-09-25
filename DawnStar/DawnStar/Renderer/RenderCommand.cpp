@@ -3,5 +3,5 @@
 
 namespace DawnStar
 {
-    RendererAPI* RenderCommand::s_RendererAPI = new RendererAPI;
+    Scope<RendererAPI> RenderCommand::s_RendererAPI = CreateScope<RendererAPI>();
 } // namespace DawnStar

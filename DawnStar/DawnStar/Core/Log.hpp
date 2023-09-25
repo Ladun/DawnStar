@@ -23,13 +23,17 @@ private:
 // Core log macros
 #define DS_CORE_TRACE(...)		::DawnStar::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define DS_CORE_INFO(...)		::DawnStar::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define DS_CORE_DEBUG(...)		::DawnStar::Log::GetCoreLogger()->debug(__VA_ARGS__)
 #define DS_CORE_WARN(...)		::DawnStar::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define DS_CORE_ERROR(...)		::DawnStar::Log::GetCoreLogger()->error(__VA_ARGS__)
 #define DS_CORE_FATAL(...)		::DawnStar::Log::GetCoreLogger()->fatal(__VA_ARGS__)
+#define DS_CORE_CRITICAL(...)		::DawnStar::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 // Client log macros
-#define DS_TRACE(...)			::DawnStar::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define DS_INFO(...)			::DawnStar::Log::GetClientLogger()->info(__VA_ARGS__)
-#define DS_WARN(...)			::DawnStar::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define DS_ERROR(...)			::DawnStar::Log::GetClientLogger()->error(__VA_ARGS__)
-#define DS_FATAL(...)			::DawnStar::Log::GetClientLogger()->fatal(__VA_ARGS__)
+#define DS_APP_TRACE(...)			::DawnStar::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define DS_APP_INFO(...)			::DawnStar::Log::GetClientLogger()->info(__VA_ARGS__)
+#define DS_APP_DEBUG(...)			::DawnStar::Log::GetClientLogger()->debug(__VA_ARGS__)
+#define DS_APP_WARN(...)			::DawnStar::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define DS_APP_ERROR(...)			::DawnStar::Log::GetClientLogger()->error(__VA_ARGS__)
+#define DS_APP_FATAL(...)			::DawnStar::Log::GetClientLogger()->fatal(__VA_ARGS__)
+#define DS_APP_CRITICAL(...)			::DawnStar::Log::GetClientLogger()->critical(__VA_ARGS__)

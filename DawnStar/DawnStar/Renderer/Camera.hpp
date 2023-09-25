@@ -6,30 +6,52 @@ namespace DawnStar
 {
     class Camera
     {
+	public:
+		enum class ProjectionType {Perspective = 0, Orthographic = 1};
     public:
         Camera();
+		explicit Camera(const glm::mat4& projection)
+			: m_Projection(projection) {}
+		~Camera() = default;
 
-		void SetProjection(float left, float right, float bottom, float top);
+		void SetPerspective(float verticalFov, float nearClip, float farClip);
+		void SetOrthographic(float size, float nearClip, float farClip);
+		
+		void SetViewportSize(uint32_t width, uint32_t height);
 
-		const glm::vec3& GetPosition() const { return m_Position; }
-		void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
+		[[nodiscard]] float GetPerspectiveVerticalFOV() const { return m_PerspectiveFOV; }
+		void SetPerspectiveVerticalFOV(float verticalFov) { m_PerspectiveFOV = verticalFov; RecalculateProjection(); }
+		[[nodiscard]] float GetPerspectiveNearClip() const { return m_PerspectiveNear; }
+		void SetPerspectiveNearClip(float nearClip) { m_PerspectiveNear = nearClip; RecalculateProjection(); }
+		[[nodiscard]] float GetPerspectiveFarClip() const { return m_PerspectiveFar; }
+		void SetPerspectiveFarClip(float farClip) { m_PerspectiveFar = farClip; RecalculateProjection(); }
+		
+		[[nodiscard]] float GetOrthographicSize() const { return m_OrthographicSize; }
+		void SetOrthographicSize(float size) { m_OrthographicSize = size; RecalculateProjection(); }
+		[[nodiscard]] float GetOrthographicNearClip() const { return m_OrthographicNear; }
+		void SetOrthographicNearClip(float nearClip) { m_OrthographicNear = nearClip; RecalculateProjection(); }
+		[[nodiscard]] float GetOrthographicFarClip() const { return m_OrthographicFar; }
+		void SetOrthographicFarClip(float farClip) { m_OrthographicFar = farClip; RecalculateProjection(); }
+		
+		[[nodiscard]] ProjectionType GetProjectionType() const { return m_ProjectionType; }
+		void SetProjectionType(ProjectionType type) { m_ProjectionType = type; RecalculateProjection(); }		
+		
+		[[nodiscard]] const glm::mat4& GetProjection() const { return m_Projection; }
 
-		float GetRotation() const { return m_Rotation; }
-		void SetRotation(float rotation) { m_Rotation = rotation; RecalculateViewMatrix(); }
-
-		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
-		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
-		const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
-        
 	private:
-		void RecalculateViewMatrix();
+		void RecalculateProjection();
 
 	private:
-		glm::mat4 m_ProjectionMatrix;
-		glm::mat4 m_ViewMatrix;
-		glm::mat4 m_ViewProjectionMatrix;
+		ProjectionType m_ProjectionType = ProjectionType::Perspective;
 
-		glm::vec3 m_Position;
-		float m_Rotation = 0.0f;
+		glm::mat4 m_Projection = glm::mat4(1.0f);
+		
+		float m_PerspectiveFOV = glm::radians(45.0f);
+		float m_PerspectiveNear = 0.01f, m_PerspectiveFar = 1000.0f;
+		
+		float m_OrthographicSize = 10.0f;
+		float m_OrthographicNear = -1.0f, m_OrthographicFar = 1.0f;
+
+		float m_AspectRatio = 0.0f;
     };
 } // namespace DawnStar

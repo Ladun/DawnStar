@@ -112,7 +112,7 @@ namespace DawnStar
 		void Unbind() const;
 
 		const BufferLayout& GetLayout() const { return m_Layout; }
-		void SetLayout(const  BufferLayout& layout);
+		void SetLayout(const BufferLayout& layout) { m_Layout = layout; }
 
 		void SetData(const void* data, uint32_t size);
 
