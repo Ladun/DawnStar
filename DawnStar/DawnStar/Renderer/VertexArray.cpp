@@ -9,15 +9,15 @@ namespace DawnStar
 	{
 		switch (type)
 		{
-			case DawnStar::ShaderDataType::Float:	return GL_FLOAT;
-			case DawnStar::ShaderDataType::Float2:	return GL_FLOAT;
-			case DawnStar::ShaderDataType::Float3:	return GL_FLOAT;
-			case DawnStar::ShaderDataType::Float4:	return GL_FLOAT;
-			case DawnStar::ShaderDataType::Mat3:	return GL_FLOAT;
+			case DawnStar::ShaderDataType::Float:	
+			case DawnStar::ShaderDataType::Float2:	
+			case DawnStar::ShaderDataType::Float3:	
+			case DawnStar::ShaderDataType::Float4:	
+			case DawnStar::ShaderDataType::Mat3:	
 			case DawnStar::ShaderDataType::Mat4:	return GL_FLOAT;
-			case DawnStar::ShaderDataType::Int:	    return GL_INT;
-			case DawnStar::ShaderDataType::Int2:	return GL_INT;
-			case DawnStar::ShaderDataType::Int3:	return GL_INT;
+			case DawnStar::ShaderDataType::Int:	    
+			case DawnStar::ShaderDataType::Int2:	
+			case DawnStar::ShaderDataType::Int3:	
 			case DawnStar::ShaderDataType::Int4:	return GL_INT;
 			case DawnStar::ShaderDataType::Bool:	return GL_BOOL;
 		}
@@ -28,21 +28,21 @@ namespace DawnStar
 
 	VertexArray::VertexArray()
 	{
-		//DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
-		glCreateVertexArrays(1, &m_RendererID);
+		glGenVertexArrays(1, &m_RendererID);
 	}
 
 	VertexArray::~VertexArray()
 	{
-		//DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
 		glDeleteVertexArrays(1, &m_RendererID);
 	}
 
 	void VertexArray::Bind() const
 	{
-		//DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
 		glBindVertexArray(m_RendererID);
 	}
@@ -50,14 +50,14 @@ namespace DawnStar
 	void VertexArray::Unbind() const
 	{
 
-		//DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
 		glBindVertexArray(0);
 	}
 
 	void VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
-		//DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
 		DS_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
@@ -85,7 +85,7 @@ namespace DawnStar
 
 	void VertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
-		//DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
 		glBindVertexArray(m_RendererID);
 		indexBuffer->Bind();

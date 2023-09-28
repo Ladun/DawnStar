@@ -145,18 +145,18 @@ namespace DawnStar
 
 	void Renderer2D::EndScene()// const Ref<RenderGraphData>& renderGraphData)
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		
 		// renderGraphData->CompositePassTarget->Bind();
-		// RenderCommand::DisableCulling();
+		RenderCommand::DisableCulling();
 		Flush();
 		// renderGraphData->CompositePassTarget->Unbind();
 	}
 
 	void Renderer2D::StartBatch()
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		RenderCommand::SetBlendState(true);
 
@@ -197,7 +197,7 @@ namespace DawnStar
 
 	void Renderer2D::NextBatch()
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		Flush();
 		StartBatch();
@@ -210,7 +210,7 @@ namespace DawnStar
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const float rotation, const glm::vec2& size, const Ref<Texture2D>& texture, const glm::vec4& tintColor, float tilingFactor)
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		
 		const glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
@@ -222,7 +222,7 @@ namespace DawnStar
 
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec4& tintColor, float tilingFactor)
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
         
 		
@@ -271,8 +271,7 @@ namespace DawnStar
 
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
 	{
-		// DS_PROFILE_SCOPE()
-
+		DS_PROFILE_SCOPE()
 		
 		constexpr size_t quadVertexCount = 4;
 		constexpr float textureIndex = 0.0f; // White Texture
@@ -299,7 +298,7 @@ namespace DawnStar
     
 void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& color)
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		s_Data.LineVertexBufferPtr->Position = p0;
 		s_Data.LineVertexBufferPtr->Color = color;
@@ -314,7 +313,7 @@ void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::v
 
 	void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		const glm::vec3 p0 = { position.x - size.x * 0.5f, position.y - size.y * 0.5f, position.z };
 		const glm::vec3 p1 = { position.x + size.x * 0.5f, position.y - size.y * 0.5f, position.z };
@@ -329,7 +328,7 @@ void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::v
 
 	void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& color)
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		glm::vec3 lineVertices[4];
 		for (size_t i = 0; i < 4; i++)
@@ -343,14 +342,14 @@ void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::v
 
 	void Renderer2D::ResetStats()
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		memset(&s_Data.Stats, 0, sizeof(Statistics));
 	}
 
 	Renderer2D::Statistics Renderer2D::GetStats()
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		return s_Data.Stats;
 	}

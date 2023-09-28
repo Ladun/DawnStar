@@ -1,6 +1,5 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <memory>
 
 namespace DawnStar
@@ -43,6 +42,6 @@ namespace DawnStar
 
 		uint32_t m_Width, m_Height;
 		uint32_t m_RendererID;
-		GLenum m_InternalFormat, m_DataFormat;
+		unsigned int m_InternalFormat, m_DataFormat;
 	};    
 } // namespace DawnStar

@@ -13,39 +13,41 @@ namespace DawnStar
 
 	VertexBuffer::VertexBuffer(uint32_t size)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
-		glCreateBuffers(1, &m_RendererID);
+		// glCreateBuffers(1, &m_RendererID);
+		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
 	}
 
 	VertexBuffer::VertexBuffer(float* vertices, uint32_t size)
 	{
-		// DS_PROFILE_FUNCTION();
+		// DS_PROFILE_SCOPE()
 
-		glCreateBuffers(1, &m_RendererID);
+		// glCreateBuffers(1, &m_RendererID);
+		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 	}
 
 	VertexBuffer::~VertexBuffer()
 	{
-		// DS_PROFILE_FUNCTION();
+		// DS_PROFILE_SCOPE()
 
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
 	void VertexBuffer::Bind() const
 	{
-		// DS_PROFILE_FUNCTION();
+		// DS_PROFILE_SCOPE()
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 	}
 
 	void VertexBuffer::Unbind() const
 	{
-		// DS_PROFILE_FUNCTION();
+		// DS_PROFILE_SCOPE()
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
@@ -63,27 +65,28 @@ namespace DawnStar
 	IndexBuffer::IndexBuffer(uint32_t* indices, uint32_t count)
 		: m_Count(count)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
-		glCreateBuffers(1, &m_RendererID);
+		// glCreateBuffers(1, &m_RendererID);
+		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 	}
 	IndexBuffer::~IndexBuffer()
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		glDeleteBuffers(1, &m_RendererID);
 	}
 	void IndexBuffer::Bind() const
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 	}
 	void IndexBuffer::Unbind() const
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}

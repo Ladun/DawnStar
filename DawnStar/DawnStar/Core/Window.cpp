@@ -17,21 +17,21 @@ namespace DawnStar
 
 	Window::Window(const WindowProps& props)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
 		Init(props);
 	}
 
 	Window::~Window()
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
 		Shutdown();
 	}
 
 	void Window::Init(const WindowProps& props)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
@@ -43,14 +43,14 @@ namespace DawnStar
 
 		if (s_GLFWWindowCount == 0)
 		{
-			// DS_PROFILE_SCOPE("glfwInit");
+			DS_PROFILE_SCOPE("glfwInit");
 			int success = glfwInit();
 			DS_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
 
 		{
-			// DS_PROFILE_SCOPE("glfwCreateWindow");
+			DS_PROFILE_SCOPE("glfwCreateWindow");
 			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 			++s_GLFWWindowCount;
 		}
@@ -155,7 +155,7 @@ namespace DawnStar
 
 	void Window::Shutdown()
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
 		glfwDestroyWindow(m_Window);
 
@@ -168,7 +168,7 @@ namespace DawnStar
 
 	void Window::OnUpdate()
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
 		glfwPollEvents();
 		m_Context->SwapBuffer();
@@ -176,7 +176,7 @@ namespace DawnStar
 
 	void Window::SetVSync(bool enabled)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE();
 
 		if (enabled)
 			glfwSwapInterval(1);

@@ -30,7 +30,8 @@ namespace DawnStar
 		{
 			DS_PROFILE_SCOPE()
 
-			DS_CORE_ASSERT(HasComponent<T>(), "Entity does not have component");
+			bool has_component = HasComponent<T>();
+			DS_CORE_ASSERT(has_component, "Entity does not have component");
 			return m_Scene->m_Registry.get<T>(m_EntityHandle);
 		}
 

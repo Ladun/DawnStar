@@ -41,7 +41,6 @@ namespace DawnStar
 		[[nodiscard]] Entity GetEntity(UUID uuid);
 
 		void OnUpdate(Timestep ts);
-		void OnRender(const CameraData& cameraData);
 
 		void OnViewportResize(uint32_t width, uint32_t height);
 		[[nodiscard]] Entity GetPrimaryCameraEntity();
@@ -50,6 +49,7 @@ namespace DawnStar
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
 
+		void OnRender(const CameraData& cameraData);
 	private:
 		friend class Entity;
 

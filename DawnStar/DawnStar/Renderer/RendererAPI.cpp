@@ -15,27 +15,30 @@ namespace DawnStar
 		[[maybe_unused]] const char* message,
 		[[maybe_unused]] const void* userParam)
 	{
-		switch (severity)
-		{
-			case GL_DEBUG_SEVERITY_HIGH:			DS_CORE_CRITICAL(message); return;
-			case GL_DEBUG_SEVERITY_MEDIUM:			DS_CORE_ERROR(message); return;
-			case GL_DEBUG_SEVERITY_LOW:				DS_CORE_WARN(message); return;
-			case GL_DEBUG_SEVERITY_NOTIFICATION:	DS_CORE_TRACE(message); return;
-			default:								DS_CORE_DEBUG("Unknown severity level: {}", message);
-		}
+		// For OpenGL 4.5
+		// switch (severity)
+		// {
+			
+		// 	case GL_DEBUG_SEVERITY_HIGH:			DS_CORE_CRITICAL(message); return;
+		// 	case GL_DEBUG_SEVERITY_MEDIUM:			DS_CORE_ERROR(message); return;
+		// 	case GL_DEBUG_SEVERITY_LOW:				DS_CORE_WARN(message); return;
+		// 	case GL_DEBUG_SEVERITY_NOTIFICATION:	DS_CORE_TRACE(message); return;
+		// 	default:								DS_CORE_DEBUG("Unknown severity level: {}", message);
+		// }
 	}
 
 	void RendererAPI::Init()
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
-		#ifdef DS_DEBUG
-			glEnable(GL_DEBUG_OUTPUT);
-			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-			glDebugMessageCallback(OpenGLMessageCallback, nullptr);
+		// For OpenGL 4.5
+		// #ifdef DS_DEBUG
+		// 	glEnable(GL_DEBUG_OUTPUT);
+		// 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		// 	glDebugMessageCallback(OpenGLMessageCallback, nullptr);
 
-			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
-		#endif
+		// 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
+		// #endif
 
 
 		glEnable(GL_BLEND);

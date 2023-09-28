@@ -2,13 +2,21 @@
 
 #include <memory>
 
+#include <DawnStar/Core/PlatformDetection.hpp>
+
 #ifdef DS_DEBUG
+	#if defined(DS_PLATFORM_WINDOWS)
+		#define DS_DEBUGBREAK() __debugbreak()
+	#elif defined(DS_PLATFORM_LINUX)
+		#include <signal.h>
+		#define DS_DEBUGBREAK() raise(SIGTRAP)
+	#endif
 	#define DS_ENALBE_ASSERTS
 #endif
 
 #ifdef DS_ENALBE_ASSERTS
-	#define DS_ASSERT(x, ...) { if(!(x)) { DS_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}
-	#define DS_CORE_ASSERT(x, ...) { if(!(x)) { DS_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}
+	#define DS_ASSERT(x, ...) { if(!(x)) { DS_ERROR("Assertion Failed: {0}", __VA_ARGS__); DS_DEBUGBREAK();}}
+	#define DS_CORE_ASSERT(x, ...) { if(!(x)) { DS_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); DS_DEBUGBREAK();}}
 #else
 	#define DS_ASSERT(x, ...) 
 	#define DS_CORE_ASSERT(x, ...) 
