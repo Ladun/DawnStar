@@ -21,6 +21,7 @@
 
 // ---Renderer-----------------------------
 #include <DawnStar/Renderer/Renderer.hpp>
+#include <DawnStar/Renderer/Renderer2D.hpp>
 #include <DawnStar/Renderer/RenderCommand.hpp>
 
 #include <DawnStar/Renderer/Buffer.hpp>

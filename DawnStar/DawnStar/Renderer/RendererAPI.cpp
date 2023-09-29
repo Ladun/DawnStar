@@ -50,28 +50,38 @@ namespace DawnStar
 
 	void RendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	{
-		glViewport(x, y, width, height);
+		DS_PROFILE_SCOPE()
+
+		glViewport(static_cast<int>(x), static_cast<int>(y),
+				   static_cast<int>(width), static_cast<int>(height));
 	}
 
 	void RendererAPI::SetClearColor(const glm::vec4& color)
 	{
+		DS_PROFILE_SCOPE()
+
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
 	void RendererAPI::Clear()
 	{
+		DS_PROFILE_SCOPE()
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void RendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
 	{
-		uint32_t count = indexCount ? vertexArray->GetIndexBuffer()->GetCount(): indexCount;
-		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		DS_PROFILE_SCOPE()
+
+		vertexArray->Bind();
+		uint32_t count = indexCount == 0? vertexArray->GetIndexBuffer()->GetCount(): indexCount;
+		glDrawElements(GL_TRIANGLES, static_cast<int>(count), GL_UNSIGNED_INT, nullptr);
 	}
-void RendererAPI::Draw(const Ref<VertexArray>& vertexArray, uint32_t count)
+
+	void RendererAPI::Draw(const Ref<VertexArray>& vertexArray, uint32_t count)
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		vertexArray->Bind();
 		glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(count));
@@ -79,7 +89,7 @@ void RendererAPI::Draw(const Ref<VertexArray>& vertexArray, uint32_t count)
 
 	void RendererAPI::DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		vertexArray->Bind();
 		glDrawArrays(GL_LINES, 0, static_cast<int>(vertexCount));
@@ -87,42 +97,42 @@ void RendererAPI::Draw(const Ref<VertexArray>& vertexArray, uint32_t count)
 
 	void RendererAPI::EnableCulling()
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		glEnable(GL_CULL_FACE);
 	}
 
 	void RendererAPI::DisableCulling()
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		glDisable(GL_CULL_FACE);
 	}
 
 	void RendererAPI::FrontCull()
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		glCullFace(GL_FRONT);
 	}
 
 	void RendererAPI::BackCull()
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		glCullFace(GL_BACK);
 	}
 
 	void RendererAPI::SetDepthMask(bool value)
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		glDepthMask(value);
 	}
 
 	void RendererAPI::SetDepthTest(bool value)
 	{
-		// DS_PROFILE_SCOPE()
+		DS_PROFILE_SCOPE()
 
 		if (value)
 			glEnable(GL_DEPTH_TEST);

@@ -7,11 +7,15 @@ namespace DawnStar
 {
 	Camera::Camera()
 	{
+		DS_PROFILE_SCOPE()
+		
 		RecalculateProjection();
 	}    
 
 	void Camera::SetPerspective(float verticalFov, float nearClip, float farClip)
 	{
+		DS_PROFILE_SCOPE()
+		
 		m_ProjectionType = ProjectionType::Perspective;
 
 		
@@ -24,6 +28,8 @@ namespace DawnStar
 
 	void Camera::SetOrthographic(float size, float nearClip, float farClip)
 	{
+		DS_PROFILE_SCOPE()
+		
 		m_ProjectionType = ProjectionType::Orthographic;
 		
 		m_OrthographicSize = size;
@@ -35,12 +41,15 @@ namespace DawnStar
 
 	void Camera::SetViewportSize(uint32_t width, uint32_t height)
 	{
+		DS_PROFILE_SCOPE()
+		
 		m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 		RecalculateProjection();
 	}
 
 	void Camera::RecalculateProjection()
 	{
+		DS_PROFILE_SCOPE()
 		
 		if(m_ProjectionType == ProjectionType::Perspective)
 		{
