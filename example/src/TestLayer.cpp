@@ -4,7 +4,7 @@
 #include <imgui.h>
 
 TestLayer::TestLayer()
-    : m_Fps(0)
+    : m_StatPanel()
 {
 
 }
@@ -39,8 +39,6 @@ void TestLayer::OnDetach()
 
 void TestLayer::OnUpdate(DawnStar::Timestep ts)
 {
-    m_Fps = (int)(1 / ts.GetSeconds());
-
 	DawnStar::Renderer2D::ResetStats();
 	DawnStar::RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 0.1f});
 	DawnStar::RenderCommand::Clear();
@@ -49,31 +47,7 @@ void TestLayer::OnUpdate(DawnStar::Timestep ts)
 
 void TestLayer::OnImGuiRender()
 {
-
-	ImGui::Begin("Settings");
-    ImGui::Text("Hello World");
-    ImGui::Text("FPS: %d", m_Fps);
-	
-	{
-		const auto stats = DawnStar::Renderer2D::GetStats();
-		ImGui::Text("2D");
-
-		ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-		ImGui::SameLine();
-		ImGui::PushItemWidth(-1);
-		ImGui::Text("Quads: %d", stats.QuadCount);
-		ImGui::SameLine();
-		ImGui::PushItemWidth(-1);
-		ImGui::Text("Tris: %d", stats.GetTotalTriangleCount());
-
-		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-		ImGui::SameLine();
-		ImGui::PushItemWidth(-1);
-		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-	}
-	ImGui::End();
-
-
+	m_StatPanel.OnImGuiRender();
 }
 
 void TestLayer::OnEvent(DawnStar::Event& e)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DawnStar/DawnStar.hpp>
+#include <DawnStar/Debug/RenderStatPanel.hpp>
 
 class TestLayer : public DawnStar::Layer
 {
@@ -16,7 +17,7 @@ public:
 	void OnEvent(DawnStar::Event& e) override;
 
 private:
-	int m_Fps;
+	DawnStar::RenderStatPanel m_StatPanel;
 
 	DawnStar::Ref<DawnStar::Scene> m_MainScene;
 };

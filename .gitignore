@@ -4,6 +4,9 @@
 test/*
 build/
 
+example_app
+imgui.ini
+
 .vscode/
 
 ### C ###
