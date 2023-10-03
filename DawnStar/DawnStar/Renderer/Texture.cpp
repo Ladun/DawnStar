@@ -6,6 +6,10 @@
 
 namespace DawnStar
 {
+	// TODO: opengl3 버전으로 하느라 함수부분이 많이 다름( opengl4 버전과 )
+	// 대표적은로 glTexture~라는 함수가 없어서 glTex~함수로 대신하는데,
+	// 이 함수는 첫 매개변수로 GL_TEXTURE_2D를 받음
+	// 하지만 glTexture~는 RendererID를 받는다~
 
     //////////////////////////////////////////////
     /////////         Texture2D         //////////
@@ -20,13 +24,15 @@ namespace DawnStar
 		// glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		// glTexStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
 		glGenTextures(1, &m_RendererID);
-		glTexImage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, NULL);
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, NULL);
+		
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		glTexParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-		glTexParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     }
 
     Texture2D::Texture2D(const std::string& path)
@@ -66,13 +72,14 @@ namespace DawnStar
 
 		glGenTextures(1, &m_RendererID);
 		// glTexStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
-		glTexImage2D(m_RendererID, 1, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, NULL);
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
 
-		glTexParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		glTexParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 		// glTexSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
@@ -92,13 +99,19 @@ namespace DawnStar
 
 		uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
 		DS_CORE_ASSERT(size == m_Width * m_Height * bpp, "Data must be entire texture!");
-		glTexSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+		
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 	}
-
+		
 	void Texture2D::Bind(uint32_t slot) const
 	{
 		DS_PROFILE_SCOPE()
 
-		glBindTexture(slot, m_RendererID);
+		// TODO: this temporary code. need to change
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		// glBindTextureUnit(slot, m_RendererID);
 	}
 }// namespace DawnStar

@@ -19,5 +19,7 @@ public:
 private:
 	DawnStar::RenderStatPanel m_StatPanel;
 
-	DawnStar::Ref<DawnStar::Scene> m_MainScene;
+	DawnStar::Ref<DawnStar::World> m_World;
+
+	DawnStar::Entity m_TestEntity;
 };

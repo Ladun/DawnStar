@@ -37,13 +37,14 @@ namespace DawnStar
 		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
 		void DestriyEntity(Entity entity);
 		Entity Duplicate(Entity entity);
-		[[nodiscard]] bool HasEntity(UUID uuid) const;
-		[[nodiscard]] Entity GetEntity(UUID uuid);
+		
+		bool HasEntity(UUID uuid) const;
+		Entity GetEntity(UUID uuid);
 
 		void OnUpdate(Timestep ts);
 
 		void OnViewportResize(uint32_t width, uint32_t height);
-		[[nodiscard]] Entity GetPrimaryCameraEntity();
+		Entity GetPrimaryCameraEntity();
 
 	private:
 		template<typename T>

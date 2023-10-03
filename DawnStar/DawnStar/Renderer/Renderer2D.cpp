@@ -222,9 +222,7 @@ namespace DawnStar
 
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const glm::vec4& tintColor, float tilingFactor)
 	{
-		DS_PROFILE_SCOPE()
-
-        
+		DS_PROFILE_SCOPE()        
 		
 		float textureIndex = 0.0f;
 

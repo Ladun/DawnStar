@@ -100,7 +100,9 @@ namespace DawnStar
 
 		std::string name = entity.GetComponent<TagComponent>().Tag;
 		Entity duplicate = CreateEntity(name);
+
 		CopyComponent(AllComponents{}, m_Registry, entity, duplicate);
+		
 		return duplicate;
     }
 
@@ -134,10 +136,10 @@ namespace DawnStar
 			const Entity cameraEntity = GetPrimaryCameraEntity();
 			if (cameraEntity)
 			{
-				cameraData.View = glm::inverse(cameraEntity.GetWorldTransform());
-				cameraData.Projection = cameraEntity.GetComponent<CameraComponent>().Cam.GetProjection();
-				cameraData.ViewProjection = cameraData.Projection * cameraData.View;
-				cameraData.Position = cameraEntity.GetTransform().Translation;
+				cameraData.View 			= glm::inverse(cameraEntity.GetWorldTransform());
+				cameraData.Projection 		= cameraEntity.GetComponent<CameraComponent>().Cam.GetProjection();
+				cameraData.ViewProjection 	= cameraData.Projection * cameraData.View;
+				cameraData.Position 		= cameraEntity.GetTransform().Translation;
 			}
 		}
 

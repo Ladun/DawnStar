@@ -21,7 +21,7 @@ namespace DawnStar
 
 	Shader::Shader(const std::string& filepath)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		std::string shaderSource = ReadFile(filepath);
 		auto shaderSources = Preprocess(shaderSource);
@@ -38,7 +38,7 @@ namespace DawnStar
 	Shader::Shader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
 		: m_Name(name)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		std::unordered_map<GLenum, std::string> sources;
 		sources[GL_VERTEX_SHADER] = vertexSrc;
@@ -48,14 +48,14 @@ namespace DawnStar
 
 	Shader::~Shader()
 	{
-		// DS_PROFILE_FUNCTION();
-
+		DS_PROFILE_SCOPE()
+		
 		glDeleteProgram(m_RendererID);
 	}
 
 	std::string Shader::ReadFile(const std::string& filepath)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		std::string result;
 		std::ifstream in(filepath, std::ios::in | std::ios::binary);
@@ -78,7 +78,7 @@ namespace DawnStar
 
 	std::unordered_map<GLenum, std::string> Shader::Preprocess(const std::string& source)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		std::unordered_map<GLenum, std::string> shaderSources;
 
@@ -106,7 +106,7 @@ namespace DawnStar
 
 	void Shader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		GLuint program = glCreateProgram();
 		DS_CORE_ASSERT(shaderSources.size() <= 2, "We only support 2 shaders for now");
@@ -178,63 +178,63 @@ namespace DawnStar
 
 	void Shader::Bind() const
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		glUseProgram(m_RendererID);
 	}
 
 	void Shader::Unbind() const
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		glUseProgram(0);
 	}
 
 	void Shader::SetInt(const std::string& name, int value)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		UploadUniformInt(name, value);
 	}
 
 	void Shader::SetIntArray(const std::string& name, int* value, uint32_t count)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		UploadUniformIntArray(name, value, count);
 	}
 
 	void Shader::SetFloat(const std::string& name, float value)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		UploadUniformFloat(name, value);
 	}
 
 	void Shader::SetFloat2(const std::string& name, const glm::vec2& value)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		UploadUniformFloat2(name, value);
 	}
 
 	void Shader::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		UploadUniformFloat3(name, value);
 	}
 
 	void Shader::SetFloat4(const std::string& name, const glm::vec4& value)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		UploadUniformFloat4(name, value);
 	}
 
 	void Shader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
-		// DS_PROFILE_FUNCTION();
+		DS_PROFILE_SCOPE()
 
 		UploadUniformMat4(name, value);
 	}

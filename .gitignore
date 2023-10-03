@@ -1,7 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,c++,cmake,c
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,c++,cmake,c
 
-test/*
+test/
 build/
 
 example_app
