@@ -7,7 +7,6 @@
 #include <DawnStar/Core/UUID.hpp>
 #include <DawnStar/Core/Timestep.hpp>
 
-
 namespace DawnStar
 {
 	class Entity;
@@ -35,7 +34,7 @@ namespace DawnStar
 
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
-		void DestriyEntity(Entity entity);
+		void DestroyEntity(Entity entity);
 		Entity Duplicate(Entity entity);
 		
 		bool HasEntity(UUID uuid) const;

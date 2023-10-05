@@ -14,12 +14,14 @@
 #include <DawnStar/Core/MouseCodes.hpp>
 
 #include <DawnStar/ImGui/ImGuiLayer.hpp>
+#include <DawnStar/ImGui/ImGuiUI.hpp>
 
 #include <DawnStar/Scene/Scene.hpp>
 #include <DawnStar/Scene/Entity.hpp>
 #include <DawnStar/Scene/Components.hpp>
+#include <DawnStar/Scene/ScriptableEntity.hpp>
 
-//
+// TODO: World class is not needed
 #include <DawnStar/Game/World.hpp>
 
 // ---Renderer-----------------------------

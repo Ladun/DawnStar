@@ -2,10 +2,10 @@
 #include <DawnStar/Scene/Scene.hpp>
 
 #include <DawnStar/Scene/Components.hpp>
-#include <DawnStar/Renderer/Renderer2D.hpp>
-
 #include <DawnStar/Scene/Entity.hpp>
-#include "Scene.hpp"
+#include <DawnStar/Scene/ScriptableEntity.hpp>
+
+#include <DawnStar/Renderer/Renderer2D.hpp>
 
 namespace DawnStar
 {
@@ -75,18 +75,24 @@ namespace DawnStar
 		return entity;
 	}
 
-	void Scene::DestriyEntity(Entity entity)
+	void Scene::DestroyEntity(Entity entity)
 	{
 		DS_PROFILE_SCOPE();
 
+		// Remove script
+		if (entity.HasComponent<ScriptComponent>())
+		{
+			auto& script = entity.GetComponent<ScriptComponent>();
+			script.DestroyScript(&script);
+		}
+
 		entity.Deparent();
 		auto children = entity.GetComponent<RelationshipComponent>().Children;
-
 		for(const auto& child: children)
 		{
 			if(Entity childEntity = GetEntity(child))
 			{
-				DestriyEntity(childEntity);
+				DestroyEntity(childEntity);
 			}
 		}
 
@@ -127,6 +133,22 @@ namespace DawnStar
     void Scene::OnUpdate(Timestep ts)
     {
 		DS_PROFILE_SCOPE();
+
+		#pragma region Scripts
+		{
+			m_Registry.view<ScriptComponent>().each([=, this](auto entity, auto& sc)
+				{
+					if (!sc.Instance)
+					{
+						sc.Instance = sc.InstantiateScript();
+						sc.Instance->m_Entity = Entity{ entity, this };
+						sc.Instance->OnCreate();
+					}
+
+					sc.Instance->OnUpdate(ts);
+				});
+		}
+		#pragma endregion
 
 		#pragma region Rendering
 		CameraData cameraData = {};
@@ -220,6 +242,12 @@ namespace DawnStar
 	template<>
 	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
 	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
+	{
+		
 	}
 
 }
