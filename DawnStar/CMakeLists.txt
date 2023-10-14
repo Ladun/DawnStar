@@ -12,12 +12,12 @@ file(GLOB_RECURSE SOURCES
      ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}/*.cpp)
 
 # Add libraries
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glm)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glfw)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glad)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/stb_image)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/imgui)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/optick)
 
 # make exe file
@@ -26,6 +26,7 @@ add_library(${PROJECT_NAME} STATIC
 )
 target_include_directories(${PROJECT_NAME} PUBLIC 
                            ${CMAKE_CURRENT_SOURCE_DIR}
+                           ${CMAKE_CURRENT_SOURCE_DIR}/third-party
                            ${CMAKE_CURRENT_SOURCE_DIR}/third-party/entt/include)
 
 # Linking

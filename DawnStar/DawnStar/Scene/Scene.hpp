@@ -58,5 +58,8 @@ namespace DawnStar
 
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 
+		// UI Component
+		glm::mat4 m_UIProjeciton;
+
 	};
 } // namespace DawnStar

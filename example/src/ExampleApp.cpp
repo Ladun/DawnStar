@@ -2,7 +2,8 @@
 #define DS_PLATFORM_WINDOWS
 #include <DawnStar/Core/EntryPoint.hpp>
 
-#include "TestLayer.hpp"
+#include "BasicExample/ExampleLayer.hpp"
+#include "UIExample/ExampleLayer.hpp"
 
 class Sandbox: public DawnStar::Application
 {
@@ -11,7 +12,8 @@ public:
 	Sandbox()
 			: Application("Test", 800, 600)
 	{
-		PushLayer(new TestLayer());
+		// PushLayer(new BasicExample::ExampleLayer());
+		PushLayer(new UIExample::ExampleLayer());
 	}
 	~Sandbox()
 	{

@@ -21,9 +21,6 @@
 #include <DawnStar/Scene/Components.hpp>
 #include <DawnStar/Scene/ScriptableEntity.hpp>
 
-// TODO: World class is not needed
-#include <DawnStar/Game/World.hpp>
-
 // ---Renderer-----------------------------
 #include <DawnStar/Renderer/Renderer.hpp>
 #include <DawnStar/Renderer/Renderer2D.hpp>

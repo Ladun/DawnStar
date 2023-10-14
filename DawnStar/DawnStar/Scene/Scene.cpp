@@ -164,7 +164,6 @@ namespace DawnStar
 				cameraData.Position 		= cameraEntity.GetTransform().Translation;
 			}
 		}
-
 		OnRender(cameraData);
 		#pragma endregion
     }
@@ -173,6 +172,7 @@ namespace DawnStar
     {
 		DS_PROFILE_CATEGORY("Rendering", Profile::Category::Rendering);
 
+		// Rendering 2D components
 		Renderer2D::BeginScene(cameraData.ViewProjection);
 		{
 			DS_PROFILE_SCOPE("Submit 2D Data");
@@ -182,6 +182,20 @@ namespace DawnStar
 			{
 				Renderer2D::DrawQuad(Entity(entity, this).GetWorldTransform(), sprite.Texture, sprite.Color, sprite.TilingFactor);
 			}
+		}
+		Renderer2D::EndScene();
+
+		// Rendering UI component
+		Renderer2D::BeginScene(m_UIProjeciton);
+		{
+			DS_PROFILE_SCOPE("Submit UI Data");
+
+			const auto view = m_Registry.view<UISpriteRendererComponent>();
+			for (auto &&[entity, sprite] : view.each())
+			{
+				Renderer2D::DrawQuad(Entity(entity, this).GetWorldTransform(), sprite.Texture, sprite.Color, sprite.TilingFactor);
+			}
+
 		}
 		Renderer2D::EndScene();
     }
@@ -202,6 +216,15 @@ namespace DawnStar
 				cameraComponent.Cam.SetViewportSize(width, height);
 		}
 
+		// Update projection matrix for ui rendering
+		float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+		const float orthoLeft = -10 * aspectRatio * 0.5f;
+		const float orthoRight = 10 * aspectRatio * 0.5f;
+		const float orthoBottom = -10 * 0.5f;
+		const float orthoTop = 10 * 0.5f;
+
+		m_UIProjeciton = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop,
+									-1.0f, 1.0f);
     }
 
     Entity Scene::GetPrimaryCameraEntity()
@@ -217,6 +240,7 @@ namespace DawnStar
 		}
 		return {};
     }
+
 
     template <typename T>
     void Scene::OnComponentAdded(Entity entity, T &component)
@@ -245,9 +269,13 @@ namespace DawnStar
 	}
 
 	template<>
+	void Scene::OnComponentAdded<UISpriteRendererComponent>(Entity entity, UISpriteRendererComponent& component)
+	{
+	}
+
+	template<>
 	void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
 	{
 		
 	}
-
 }
