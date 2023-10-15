@@ -5,6 +5,12 @@
 
 namespace UIExample
 {
+	
+	struct CustomComponent
+	{
+		uint32_t value1;
+	};
+
 	class ExampleLayer : public DawnStar::Layer
 	{
 	public:

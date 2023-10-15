@@ -19,7 +19,7 @@
 #include <DawnStar/Scene/Scene.hpp>
 #include <DawnStar/Scene/Entity.hpp>
 #include <DawnStar/Scene/Components.hpp>
-#include <DawnStar/Scene/ScriptableEntity.hpp>
+#include <DawnStar/Scene/SystemBase.hpp>
 
 // ---Renderer-----------------------------
 #include <DawnStar/Renderer/Renderer.hpp>

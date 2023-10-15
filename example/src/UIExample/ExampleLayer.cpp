@@ -1,13 +1,19 @@
 #include <DawnStar/dspch.hpp>
-#include <DawnStar/Scene/Scene.hpp>
 
 #include "ExampleLayer.hpp"
 
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
+template<>
+void DawnStar::Scene::OnComponentAdded<UIExample::CustomComponent>(DawnStar::Entity entity, UIExample::CustomComponent& component)
+{
+
+}
+
 namespace UIExample
 {
+
 	ExampleLayer::ExampleLayer()
 		: m_StatPanel()
 	{
@@ -19,6 +25,8 @@ namespace UIExample
 		m_Scene = DawnStar::CreateRef<DawnStar::Scene>();
 		m_Scene->OnViewportResize(DawnStar::Application::Get().GetWindow().GetWidth(),
 								  DawnStar::Application::Get().GetWindow().GetHeight());
+
+		//m_Scene->AddSystem();
 		{ // Camera
 			DawnStar::Entity mainCam = m_Scene->CreateEntity("Main Camera");
 			mainCam.AddComponent<DawnStar::CameraComponent>();        
@@ -36,6 +44,8 @@ namespace UIExample
 			// Texture setting
 			auto& sprite = m_TestEntity2.AddComponent<DawnStar::SpriteRendererComponent>();
 			sprite.Color = {0.7f, 1.0f, 0.3f, 1.0f};
+
+			m_TestEntity2.AddComponent<CustomComponent>();
 		}
 
 

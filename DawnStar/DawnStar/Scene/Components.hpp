@@ -69,22 +69,6 @@ namespace DawnStar
 		UUID ID;
 	};
 
-	class ScriptableEntity;
-	struct ScriptComponent
-	{		
-		ScriptableEntity* Instance = nullptr;
-
-		ScriptableEntity*(*InstantiateScript)();
-		void (*DestroyScript)(ScriptComponent*);
-
-		template<typename T>
-		void Bind()
-		{
-			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
-			DestroyScript = [](ScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
-		}
-	};
-
 	// UI Component
 	struct UISpriteRendererComponent
 	{

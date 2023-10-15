@@ -6,6 +6,7 @@
 
 namespace BasicExample
 {
+
 	class ExampleLayer : public DawnStar::Layer
 	{
 	public:

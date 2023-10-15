@@ -6,6 +6,7 @@
 #include <DawnStar/Core/Core.hpp>
 #include <DawnStar/Core/UUID.hpp>
 #include <DawnStar/Core/Timestep.hpp>
+#include <DawnStar/Scene/SystemBase.hpp>
 
 namespace DawnStar
 {
@@ -29,7 +30,6 @@ namespace DawnStar
 
 	class Scene
 	{
-
 	public:
 
 		Entity CreateEntity(const std::string& name = std::string());
@@ -39,6 +39,8 @@ namespace DawnStar
 		
 		bool HasEntity(UUID uuid) const;
 		Entity GetEntity(UUID uuid);
+		
+		void AddSystem(Ref<SystemBase> system);
 
 		void OnUpdate(Timestep ts);
 
@@ -52,14 +54,14 @@ namespace DawnStar
 		void OnRender(const CameraData& cameraData);
 	private:
 		friend class Entity;
+		friend class SystemBase;
 
 		entt::registry m_Registry;
 		std::unordered_map<UUID, entt::entity> m_EntityMap;
 
+		std::vector<Ref<SystemBase>> m_Systems;
+
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
-
-		// UI Component
 		glm::mat4 m_UIProjeciton;
-
 	};
 } // namespace DawnStar

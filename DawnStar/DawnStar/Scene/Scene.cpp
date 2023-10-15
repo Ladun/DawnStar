@@ -3,9 +3,9 @@
 
 #include <DawnStar/Scene/Components.hpp>
 #include <DawnStar/Scene/Entity.hpp>
-#include <DawnStar/Scene/ScriptableEntity.hpp>
 
 #include <DawnStar/Renderer/Renderer2D.hpp>
+#include "Scene.hpp"
 
 namespace DawnStar
 {
@@ -79,13 +79,6 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE();
 
-		// Remove script
-		if (entity.HasComponent<ScriptComponent>())
-		{
-			auto& script = entity.GetComponent<ScriptComponent>();
-			script.DestroyScript(&script);
-		}
-
 		entity.Deparent();
 		auto children = entity.GetComponent<RelationshipComponent>().Children;
 		for(const auto& child: children)
@@ -130,23 +123,23 @@ namespace DawnStar
 		return {};
     }
 
+    void Scene::AddSystem(Ref<SystemBase> system)
+    {
+		DS_PROFILE_SCOPE();
+
+		m_Systems.push_back(system);
+    }
+
     void Scene::OnUpdate(Timestep ts)
     {
 		DS_PROFILE_SCOPE();
 
-		#pragma region Scripts
+		#pragma region System updating
 		{
-			m_Registry.view<ScriptComponent>().each([=, this](auto entity, auto& sc)
-				{
-					if (!sc.Instance)
-					{
-						sc.Instance = sc.InstantiateScript();
-						sc.Instance->m_Entity = Entity{ entity, this };
-						sc.Instance->OnCreate();
-					}
-
-					sc.Instance->OnUpdate(ts);
-				});
+			for(Ref<SystemBase> system: m_Systems)
+			{
+				system->OnUpdate(ts, m_Registry);
+			}
 		}
 		#pragma endregion
 
@@ -258,6 +251,7 @@ namespace DawnStar
 	{
 		component.Cam.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
 	}
+	
 	template<>
 	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
 	{
@@ -271,11 +265,5 @@ namespace DawnStar
 	template<>
 	void Scene::OnComponentAdded<UISpriteRendererComponent>(Entity entity, UISpriteRendererComponent& component)
 	{
-	}
-
-	template<>
-	void Scene::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
-	{
-		
 	}
 }
