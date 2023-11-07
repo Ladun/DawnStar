@@ -210,11 +210,12 @@ namespace DawnStar
 		}
 
 		// Update projection matrix for ui rendering
-		float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
-		const float orthoLeft = -10 * aspectRatio * 0.5f;
-		const float orthoRight = 10 * aspectRatio * 0.5f;
-		const float orthoBottom = -10 * 0.5f;
-		const float orthoTop = 10 * 0.5f;
+		float heightF = static_cast<float>(height);
+		float aspectRatio = static_cast<float>(width) / heightF;
+		const float orthoLeft = -heightF * aspectRatio * 0.5f;
+		const float orthoRight = heightF * aspectRatio * 0.5f;
+		const float orthoBottom = -heightF * 0.5f;
+		const float orthoTop = heightF * 0.5f;
 
 		m_UIProjeciton = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop,
 									-1.0f, 1.0f);
@@ -234,6 +235,13 @@ namespace DawnStar
 		return {};
     }
 
+    void Scene::SortForSprites()
+    {
+		m_Registry.sort<SpriteRendererComponent>([](const auto& lhs, const auto& rhs)
+		{
+			return lhs.SortingOrder < rhs.SortingOrder;
+		});
+    }
 
     template <typename T>
     void Scene::OnComponentAdded(Entity entity, T &component)

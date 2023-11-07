@@ -6,26 +6,45 @@
 #include <DawnStar/Core/Application.hpp>
 
 #include <GLFW/glfw3.h>
+#include "Input.hpp"
 
 namespace DawnStar
 {
+    InputState Input::m_KeyState;
+    InputState Input::m_MouseState;
     
-    bool Input::IsKeyPressed(const KeyCode key)
+    bool Input::IsKey(const KeyCode key)
     {
         DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
 
-        auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-        const int state = glfwGetKey(window, static_cast<int32_t>(key));
-        return state == GLFW_PRESS || state == GLFW_REPEAT;
+        return m_KeyState.GetCurrentState(key);
+    }
+    bool Input::IsKeyDown(const KeyCode key)
+    {
+        DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
+        return !m_KeyState.GetLastState(key) && m_KeyState.GetCurrentState(key);
+    }
+    bool Input::IsKeyUp(const KeyCode key)
+    {
+        DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
+        return m_KeyState.GetLastState(key) && !m_KeyState.GetCurrentState(key);
+    }
+        
+    bool Input::IsMouseButton(MouseCode button)
+    {
+        DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
+        return m_KeyState.GetCurrentState(button);
+    }
+    bool Input::IsMouseButtonDown(MouseCode button)
+    {
+        DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
+        return !m_MouseState.GetLastState(button) && m_MouseState.GetCurrentState(button);
     }
 
-    bool Input::IsMouseButtonPressed(const MouseCode button)
+    bool Input::IsMouseButtonUp(MouseCode button)
     {
         DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
-
-        auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
-        const int state = glfwGetMouseButton(window, static_cast<int32_t>(button));
-        return state == GLFW_PRESS;
+        return m_MouseState.GetLastState(button) && !m_MouseState.GetCurrentState(button);
     }
 
     glm::vec2 Input::GetMousePosition()
@@ -36,14 +55,50 @@ namespace DawnStar
         double xpos;
         double ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
+        
         return { xpos, ypos };
     }
 
     void Input::SetMousePosition(const glm::vec2& position)
     {
-        auto* window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
+        auto *window = static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow());
         glfwSetCursorPos(window, static_cast<double>(position.x), static_cast<double>(position.y));
     }
+
+    void Input::OnUpdate()
+    {        
+        for(auto p : m_KeyState.m_CurrentState)
+        {
+            m_KeyState.m_LastState[p.first] = p.second;
+        }
+        for(auto p : m_MouseState.m_CurrentState)
+        {
+            m_MouseState.m_LastState[p.first] = p.second;
+        }
+    }
+
+    void Input::SetUpKey(KeyCode key, bool pressed)
+    {
+        m_KeyState.m_CurrentState[key] = pressed;
+
+        auto it = m_KeyState.m_LastState.find(key);
+        if(it ==  m_KeyState.m_LastState.end())
+        {
+            m_KeyState.m_LastState[key] = !pressed;
+        }
+    }
+
+    void Input::SetUpMouse(MouseCode key, bool pressed)
+    {
+        m_MouseState.m_CurrentState[key] = pressed;
+
+        auto it = m_MouseState.m_LastState.find(key);
+        if(it ==  m_MouseState.m_LastState.end())
+        {
+            m_MouseState.m_LastState[key] = !pressed;
+        }
+    }
 } // namespace DawnStar
+
 
 #endif

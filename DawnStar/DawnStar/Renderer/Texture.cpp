@@ -17,7 +17,6 @@ namespace DawnStar
     Texture2D::Texture2D(uint32_t width, uint32_t height)
         :m_Width(width), m_Height(height)
     {
-        
 		m_InternalFormat = GL_RGBA8;
 		m_DataFormat = GL_RGBA;
 
@@ -33,7 +32,7 @@ namespace DawnStar
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    }
+	}
 
     Texture2D::Texture2D(const std::string& path)
 		: m_Path(path)
@@ -49,6 +48,8 @@ namespace DawnStar
 			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 		}
 		DS_CORE_ASSERT(data, "failed to load image!");
+
+		m_IsLoaded = true;
 
 		m_Width = width;
 		m_Height = height;
@@ -83,7 +84,7 @@ namespace DawnStar
 
 		// glTexSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
-		stbi_image_free(data);
+		stbi_image_free(data);    
 	}
 
 	Texture2D::~Texture2D()
@@ -104,13 +105,13 @@ namespace DawnStar
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 	}
-		
+
 	void Texture2D::Bind(uint32_t slot) const
 	{
 		DS_PROFILE_SCOPE()
 
 		// TODO: this temporary code. need to change
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0 + static_cast<int>(slot));
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 		// glBindTextureUnit(slot, m_RendererID);
 	}

@@ -1,6 +1,7 @@
 #include <DawnStar/dspch.hpp>
 
 #include <DawnStar/Core/Window.hpp>
+#include <DawnStar/Core/Input.hpp>
 
 #include <DawnStar/Events/ApplicationEvent.hpp>
 #include <DawnStar/Events/KeyEvent.hpp>
@@ -104,6 +105,7 @@ namespace DawnStar
 						break;
 					}
 				}
+				Input::SetUpKey(key, action!=GLFW_RELEASE);
 			});
 
 		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
@@ -133,6 +135,7 @@ namespace DawnStar
 					break;
 				}
 				}
+				Input::SetUpMouse(button, action==GLFW_PRESS);
 			});
 
 		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)

@@ -96,6 +96,7 @@ namespace DawnStar
 			}
 
 
+			Input::OnUpdate();
 			m_Window->OnUpdate();
 		}
 	}
