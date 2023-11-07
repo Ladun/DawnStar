@@ -8,6 +8,11 @@
 #include <DawnStar/Core/Timestep.hpp>
 #include <DawnStar/Scene/SystemBase.hpp>
 
+#define SCENE_ADDCOMPONENT_FUNC_HEAD(ComponentType) \
+template<> \
+void DawnStar::Scene::OnComponentAdded<ComponentType>(DawnStar::Entity entity, ComponentType& component)
+
+
 namespace DawnStar
 {
 	class Entity;
