@@ -79,24 +79,14 @@ namespace DawnStar
 
     void Input::SetUpKey(KeyCode key, bool pressed)
     {
-        m_KeyState.m_CurrentState[key] = pressed;
-
-        auto it = m_KeyState.m_LastState.find(key);
-        if(it ==  m_KeyState.m_LastState.end())
-        {
-            m_KeyState.m_LastState[key] = !pressed;
-        }
+        m_KeyState.SetCurrentState(key, pressed);
+        m_KeyState.SetCurrentState(Key::Any, pressed);
     }
 
     void Input::SetUpMouse(MouseCode key, bool pressed)
     {
-        m_MouseState.m_CurrentState[key] = pressed;
-
-        auto it = m_MouseState.m_LastState.find(key);
-        if(it ==  m_MouseState.m_LastState.end())
-        {
-            m_MouseState.m_LastState[key] = !pressed;
-        }
+        m_MouseState.SetCurrentState(key, pressed);
+        m_MouseState.SetCurrentState(Mouse::Any, pressed);
     }
 } // namespace DawnStar
 

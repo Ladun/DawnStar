@@ -42,10 +42,21 @@ namespace DawnStar
 				return false;
 			}
 		}
+
+		void SetCurrentState(uint16_t key, bool pressed)
+		{
+			m_CurrentState[key] = pressed;
+
+			auto it = m_LastState.find(key);
+			if(it ==  m_LastState.end())
+			{
+				m_LastState[key] = !pressed;
+			}
+		}
 	public:
 		// Pressed = true, Released = false
-		std::unordered_map<KeyCode, bool> m_CurrentState;
-		std::unordered_map<KeyCode, bool> m_LastState;
+		std::unordered_map<uint16_t, bool> m_CurrentState;
+		std::unordered_map<uint16_t, bool> m_LastState;
 	};
 
 	class Input
