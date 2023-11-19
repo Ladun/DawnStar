@@ -88,9 +88,15 @@ namespace DawnStar
 				DestroyEntity(childEntity);
 			}
 		}
+		bool hasSprite = entity.HasComponent<SpriteRendererComponent>();
 
 		m_EntityMap.erase(entity.GetUUID());
 		m_Registry.destroy(entity);
+
+		if(hasSprite)
+		{
+			SortForSprites();
+		}
 	}
 
     Entity Scene::Duplicate(Entity entity)
