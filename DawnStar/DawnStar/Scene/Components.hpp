@@ -70,13 +70,30 @@ namespace DawnStar
 	};
 
 	// UI Component
-	struct UISpriteRendererComponent
+	namespace UI
 	{
-		glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
-		Ref<Texture2D> Texture = nullptr;
-		int32_t SortingOrder = 0;
-		float TilingFactor = 1.0f;
-	};
+		struct PositionComponent
+		{
+			float anchorMinX = 0.0f, anchorMinY = 0.f;
+			float anchorMaxX, anchorMaxY;
+
+			// 현재 오브젝트의 기준점의 위치
+			float pivotX = 0.5f, pivotY = 0.5f;
+		};
+
+		struct SpriteRendererComponent
+		{
+			glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+			Ref<Texture2D> Texture = nullptr;
+			int32_t SortingOrder = 0;
+			float TilingFactor = 1.0f;
+		};
+
+		struct ButtonComponent
+		{
+
+		};
+	}
 	
 	
 	// etc...

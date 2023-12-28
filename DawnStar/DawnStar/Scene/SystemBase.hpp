@@ -17,7 +17,6 @@ namespace DawnStar
         SystemBase(const SystemBase& other) = delete;
         SystemBase(SystemBase&& other) = delete;
         ~SystemBase() = default;
-
     protected:
         virtual void OnUpdate(Timestep ts, entt::registry& registry) = 0;
     };
