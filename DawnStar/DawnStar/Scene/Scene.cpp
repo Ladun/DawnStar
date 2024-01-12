@@ -189,7 +189,7 @@ namespace DawnStar
 		{
 			DS_PROFILE_SCOPE("Submit UI Data");
 
-			const auto view = m_Registry.view<UISpriteRendererComponent>();
+			const auto view = m_Registry.view<UI::SpriteRendererComponent>();
 			for (auto &&[entity, sprite] : view.each())
 			{
 				Renderer2D::DrawQuad(Entity(entity, this).GetWorldTransform(), sprite.Texture, sprite.Color, sprite.TilingFactor);
@@ -277,7 +277,7 @@ namespace DawnStar
 	}
 
 	template<>
-	void Scene::OnComponentAdded<UISpriteRendererComponent>(Entity entity, UISpriteRendererComponent& component)
+	void Scene::OnComponentAdded<UI::SpriteRendererComponent>(Entity entity, UI::SpriteRendererComponent& component)
 	{
 	}
 }
