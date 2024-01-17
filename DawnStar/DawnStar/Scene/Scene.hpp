@@ -37,6 +37,9 @@ namespace DawnStar
 	{
 	public:
 
+		/// @brief created entity has only ID, Relationship, Transform, Tag component
+		/// @param name 
+		/// @return 
 		Entity CreateEntity(const std::string& name = std::string());
 		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = std::string());
 		void DestroyEntity(Entity entity);
@@ -54,6 +57,10 @@ namespace DawnStar
 
 		void SortForSprites();
 
+	public:
+		uint32_t GetViewportWidth() { return _viewportWidth; }
+		uint32_t GetViewportHeight() { return _viewportHeight; }
+
 	private:
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
@@ -61,13 +68,13 @@ namespace DawnStar
 		void OnRender(const CameraData& cameraData);
 
 	private:
-		entt::registry m_Registry;
-		std::unordered_map<UUID, entt::entity> m_EntityMap;
+		entt::registry _registry;
+		std::unordered_map<UUID, entt::entity> _entityMap;
 
-		std::vector<Ref<SystemBase>> m_Systems;
+		std::vector<Ref<SystemBase>> _systems;
 
-		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
-		glm::mat4 m_UIProjeciton;
+		uint32_t _viewportWidth = 0, _viewportHeight = 0;
+		glm::mat4 _uiProjection;
 		
 		friend class Entity;
 		friend class SystemBase;

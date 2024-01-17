@@ -1,6 +1,5 @@
 #pragma once
 
-#include <DawnStar/Core/Core.hpp>
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 
@@ -37,3 +36,5 @@ private:
 #define DS_APP_ERROR(...)			::DawnStar::Log::GetClientLogger()->error(__VA_ARGS__)
 #define DS_APP_FATAL(...)			::DawnStar::Log::GetClientLogger()->fatal(__VA_ARGS__)
 #define DS_APP_CRITICAL(...)			::DawnStar::Log::GetClientLogger()->critical(__VA_ARGS__)
+
+#include <DawnStar/Core/Core.hpp>

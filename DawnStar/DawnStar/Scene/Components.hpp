@@ -72,13 +72,15 @@ namespace DawnStar
 	// UI Component
 	namespace UI
 	{
-		struct PositionComponent
+		struct LayoutComponent // RequireComponents [TransformComponent]
 		{
-			float anchorMinX = 0.0f, anchorMinY = 0.f;
-			float anchorMaxX, anchorMaxY;
+			glm::vec2 AnchorMin{0.0f, 0.0f};  // Anchor's minimum point normalized to parent size (0 to 1)
+			glm::vec2 AnchorMax{1.0f, 1.0f};  // Anchor's maximum point normalized to parent size (0 to 1)
+			glm::vec2 Pivot{0.5, 0.5};      // Pivot point normalized to the rectangle's size (0 to 1)
 
-			// 현재 오브젝트의 기준점의 위치
-			float pivotX = 0.5f, pivotY = 0.5f;
+			float rotation = 0.0f;
+			glm::vec2 Position;
+			glm::vec4 Box; //( x, y, w, h) or (l, t, r, b)
 		};
 
 		struct SpriteRendererComponent
@@ -91,7 +93,7 @@ namespace DawnStar
 
 		struct ButtonComponent
 		{
-
+			int temp = 0;
 		};
 	}
 	
@@ -107,6 +109,11 @@ namespace DawnStar
 		RelationshipComponent,
 		PrefabComponent,
 		CameraComponent,
+
+		// UI
+		UI::LayoutComponent,
+		UI::SpriteRendererComponent,
+		UI::ButtonComponent,
 
 		// 2D
 		SpriteRendererComponent

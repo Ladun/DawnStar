@@ -61,8 +61,8 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE();
 
-		Entity entity = {m_Registry.create(), this};
-		m_EntityMap.emplace(uuid, entity);
+		Entity entity = {_registry.create(), this};
+		_entityMap.emplace(uuid, entity);
 
 		entity.AddComponent<IDComponent>(uuid);
 
@@ -90,8 +90,8 @@ namespace DawnStar
 		}
 		bool hasSprite = entity.HasComponent<SpriteRendererComponent>();
 
-		m_EntityMap.erase(entity.GetUUID());
-		m_Registry.destroy(entity);
+		_entityMap.erase(entity.GetUUID());
+		_registry.destroy(entity);
 
 		if(hasSprite)
 		{
@@ -106,7 +106,7 @@ namespace DawnStar
 		std::string name = entity.GetComponent<TagComponent>().Tag;
 		Entity duplicate = CreateEntity(name);
 
-		CopyComponent(AllComponents{}, m_Registry, entity, duplicate);
+		CopyComponent(AllComponents{}, _registry, entity, duplicate);
 		
 		return duplicate;
     }
@@ -115,15 +115,15 @@ namespace DawnStar
     {
 		DS_PROFILE_SCOPE()
 		
-		return m_EntityMap.contains(uuid);
+		return _entityMap.contains(uuid);
     }
 
     Entity Scene::GetEntity(UUID uuid)
     {
 		DS_PROFILE_SCOPE()
 
-		const auto& it = m_EntityMap.find(uuid);
-		if (it != m_EntityMap.end())
+		const auto& it = _entityMap.find(uuid);
+		if (it != _entityMap.end())
 			return { it->second, this };
 
 		return {};
@@ -133,7 +133,7 @@ namespace DawnStar
     {
 		DS_PROFILE_SCOPE();
 
-		m_Systems.push_back(system);
+		_systems.push_back(system);
     }
 
     void Scene::OnUpdate(Timestep ts)
@@ -142,9 +142,9 @@ namespace DawnStar
 
 		#pragma region System updating
 		{
-			for(Ref<SystemBase> system: m_Systems)
+			for(Ref<SystemBase> system: _systems)
 			{
-				system->OnUpdate(ts, m_Registry);
+				system->OnUpdate(ts, _registry);
 			}
 		}
 		#pragma endregion
@@ -176,7 +176,7 @@ namespace DawnStar
 		{
 			DS_PROFILE_SCOPE("Submit 2D Data");
 
-			const auto view = m_Registry.view<SpriteRendererComponent>();
+			const auto view = _registry.view<SpriteRendererComponent>();
 			for (auto &&[entity, sprite] : view.each())
 			{
 				Renderer2D::DrawQuad(Entity(entity, this).GetWorldTransform(), sprite.Texture, sprite.Color, sprite.TilingFactor);
@@ -185,11 +185,11 @@ namespace DawnStar
 		Renderer2D::EndScene();
 
 		// Rendering UI component
-		Renderer2D::BeginScene(m_UIProjeciton);
+		Renderer2D::BeginScene(_uiProjection);
 		{
 			DS_PROFILE_SCOPE("Submit UI Data");
 
-			const auto view = m_Registry.view<UI::SpriteRendererComponent>();
+			const auto view = _registry.view<UI::SpriteRendererComponent>();
 			for (auto &&[entity, sprite] : view.each())
 			{
 				Renderer2D::DrawQuad(Entity(entity, this).GetWorldTransform(), sprite.Texture, sprite.Color, sprite.TilingFactor);
@@ -203,11 +203,11 @@ namespace DawnStar
     {
 		DS_PROFILE_SCOPE();
 
-		m_ViewportWidth = width;
-		m_ViewportHeight = height;
+		_viewportWidth = width;
+		_viewportHeight = height;
 
 		// Resize our non-FixedAspectRatio cameras
-		const auto view = m_Registry.view<CameraComponent>();
+		const auto view = _registry.view<CameraComponent>();
 		for( const auto entity : view)
 		{
 			auto& cameraComponent = view.get<CameraComponent>(entity);
@@ -218,12 +218,18 @@ namespace DawnStar
 		// Update projection matrix for ui rendering
 		float heightF = static_cast<float>(height);
 		float aspectRatio = static_cast<float>(width) / heightF;
-		const float orthoLeft = -heightF * aspectRatio * 0.5f;
-		const float orthoRight = heightF * aspectRatio * 0.5f;
-		const float orthoBottom = -heightF * 0.5f;
-		const float orthoTop = heightF * 0.5f;
+		// (0, 0) center
+		// const float orthoLeft = -heightF * aspectRatio * 0.5f;
+		// const float orthoRight = heightF * aspectRatio * 0.5f;
+		// const float orthoBottom = -heightF * 0.5f;
+		// const float orthoTop = heightF * 0.5f;
+		// (0, 0) left-bottom
+		const float orthoLeft = 0;
+		const float orthoRight = heightF * aspectRatio;
+		const float orthoBottom = 0;
+		const float orthoTop = heightF;
 
-		m_UIProjeciton = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop,
+		_uiProjection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop,
 									-1.0f, 1.0f);
     }
 
@@ -231,7 +237,7 @@ namespace DawnStar
     {
 		DS_PROFILE_CATEGORY("Camera", Profile::Category::Camera);
 
-		const auto view = m_Registry.view<CameraComponent>();
+		const auto view = _registry.view<CameraComponent>();
 		for(auto entity : view)
 		{
 			const auto& camera = view.get<CameraComponent>(entity);
@@ -243,7 +249,7 @@ namespace DawnStar
 
     void Scene::SortForSprites()
     {
-		m_Registry.sort<SpriteRendererComponent>([](const auto& lhs, const auto& rhs)
+		_registry.sort<SpriteRendererComponent>([](const auto& lhs, const auto& rhs)
 		{
 			return lhs.SortingOrder < rhs.SortingOrder;
 		});
@@ -263,7 +269,7 @@ namespace DawnStar
 	template<>
 	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
 	{
-		component.Cam.SetViewportSize(m_ViewportWidth, m_ViewportHeight);
+		component.Cam.SetViewportSize(_viewportWidth, _viewportHeight);
 	}
 	
 	template<>
@@ -277,7 +283,15 @@ namespace DawnStar
 	}
 
 	template<>
+	void Scene::OnComponentAdded<UI::LayoutComponent>(Entity entity, UI::LayoutComponent& component)
+	{
+	}
+	template<>
 	void Scene::OnComponentAdded<UI::SpriteRendererComponent>(Entity entity, UI::SpriteRendererComponent& component)
+	{
+	}
+	template<>
+	void Scene::OnComponentAdded<UI::ButtonComponent>(Entity entity, UI::ButtonComponent& component)
 	{
 	}
 }

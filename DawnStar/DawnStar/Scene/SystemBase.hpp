@@ -13,11 +13,14 @@ namespace DawnStar
     {
         friend class Scene;
     public:
-        SystemBase() = default;
+        SystemBase(Ref<Scene>& scene) : _scene(scene) {};
         SystemBase(const SystemBase& other) = delete;
         SystemBase(SystemBase&& other) = delete;
         ~SystemBase() = default;
     protected:
         virtual void OnUpdate(Timestep ts, entt::registry& registry) = 0;
+
+    protected:
+        Ref<Scene> _scene;
     };
 } // namespace DawnStar

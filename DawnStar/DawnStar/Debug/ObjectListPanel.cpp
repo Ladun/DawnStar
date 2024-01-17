@@ -22,7 +22,7 @@ namespace DawnStar
 		ImGui::Begin("Entity hierachy");
 		if(m_Context)
 		{
-			m_Context->m_Registry.each([&](auto entityID)
+			m_Context->_registry.each([&](auto entityID)
 				{
 					Entity entity{ entityID , m_Context.get() };
 					if (entity && !entity.GetParent())
@@ -196,6 +196,36 @@ namespace DawnStar
 			ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.0f, 100.0f);
 		});
 
+		DrawComponent<UI::LayoutComponent>("UI Layout", entity, [](auto& component)
+		{
+			DawnStar::ImGuiUI::DrawVec2Control("Anchor Min", component.AnchorMin,
+											   {0.0f, 0.0f}, component.AnchorMax, 0.01f);
+			DawnStar::ImGuiUI::DrawVec2Control("Anchor Max", component.AnchorMax,
+											   component.AnchorMin, {1.0f, 1.0f}, 0.01f);
+			DawnStar::ImGuiUI::DrawVec2Control("Pivot", component.Pivot, 
+											   {0.0f, 0.0f}, {1.0f, 1.0f}, 0.01f);
+											   
+			if(component.AnchorMin.x == component.AnchorMax.x)
+			{	
+				ImGui::DragFloat("X", &component.Box.x, 0.1f, 0.0f, 0.0f);
+				ImGui::DragFloat("Width", &component.Box.z, 0.1f, 0.0f, 0.0f);
+			}
+			else
+			{
+				ImGui::DragFloat("Left", &component.Box.x, 0.1f, 0.0f, 0.0f);
+				ImGui::DragFloat("Right", &component.Box.z, 0.1f, 0.0f, 0.0f);
+			}							   
+			if(component.AnchorMin.y == component.AnchorMax.y)
+			{	
+				ImGui::DragFloat("Y", &component.Box.y, 0.1f, 0.0f, 0.0f);
+				ImGui::DragFloat("Height", &component.Box.w, 0.1f, 0.0f, 0.0f);
+			}
+			else
+			{
+				ImGui::DragFloat("Top", &component.Box.y, 0.1f, 0.0f, 0.0f);
+				ImGui::DragFloat("Bottom", &component.Box.w, 0.1f, 0.0f, 0.0f);
+			}
+		});
 
 
 	}

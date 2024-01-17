@@ -20,7 +20,7 @@ namespace DawnStar
 			DS_PROFILE_SCOPE()
 
 			DS_CORE_ASSERT(m_Scene, "Scene is null!")
-			T& component = m_Scene->m_Registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
+			T& component = m_Scene->_registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
 			m_Scene->OnComponentAdded<T>(*this, component);
 			return component;
 		}
@@ -32,7 +32,7 @@ namespace DawnStar
 
 			bool has_component = HasComponent<T>();
 			DS_CORE_ASSERT(has_component, "Entity does not have component");
-			return m_Scene->m_Registry.get<T>(m_EntityHandle);
+			return m_Scene->_registry.get<T>(m_EntityHandle);
 		}
 
 		template<typename T>
@@ -41,7 +41,7 @@ namespace DawnStar
 			DS_PROFILE_SCOPE()
 
 			DS_CORE_ASSERT(m_Scene, "Scene is null!")
-			return m_Scene->m_Registry.all_of<T>(m_EntityHandle);
+			return m_Scene->_registry.all_of<T>(m_EntityHandle);
 		}
 
 		template<typename T>
@@ -50,7 +50,7 @@ namespace DawnStar
 			DS_PROFILE_SCOPE()
 
 			DS_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!")
-			m_Scene->m_Registry.remove<T>(m_EntityHandle);
+			m_Scene->_registry.remove<T>(m_EntityHandle);
 		}
 
 		[[nodiscard]] UUID GetUUID() const { return GetComponent<IDComponent>().ID; }
@@ -72,7 +72,7 @@ namespace DawnStar
 		{
 			DS_PROFILE_SCOPE()
 
-			DS_CORE_ASSERT(m_Scene->m_EntityMap.contains(parent.GetUUID()), "Parent is not in the same scene as entity")
+			DS_CORE_ASSERT(m_Scene->_entityMap.contains(parent.GetUUID()), "Parent is not in the same scene as entity")
 			Deparent();
 			
 			auto& rc = GetComponent<RelationshipComponent>();
@@ -124,7 +124,7 @@ namespace DawnStar
 
 		[[nodiscard]] Scene* GetScene() const { return m_Scene; }
 
-		operator bool() const { return m_EntityHandle != entt::null && m_Scene != nullptr && m_Scene->m_Registry.valid(m_EntityHandle); }
+		operator bool() const { return m_EntityHandle != entt::null && m_Scene != nullptr && m_Scene->_registry.valid(m_EntityHandle); }
 		operator entt::entity() const { return m_EntityHandle; }
 		operator uint32_t() const { return static_cast<uint32_t>(m_EntityHandle); }
 

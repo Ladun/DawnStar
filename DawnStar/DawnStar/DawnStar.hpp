@@ -3,6 +3,7 @@
 
 // For use by DawnStar application
 
+#include <DawnStar/Core/Types.hpp>
 #include <DawnStar/Core/Application.hpp>
 #include <DawnStar/Core/Layer.hpp>
 #include <DawnStar/Core/Log.hpp>

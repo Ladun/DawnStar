@@ -15,7 +15,7 @@
 #endif
 
 #ifdef DS_ENALBE_ASSERTS
-	#define DS_ASSERT(x, ...) { if(!(x)) { DS_ERROR("Assertion Failed: {0}", __VA_ARGS__); DS_DEBUGBREAK();}}
+	#define DS_ASSERT(x, ...) { if(!(x)) { DS_APP_ERROR("Assertion Failed: {0}", __VA_ARGS__); DS_DEBUGBREAK();}}
 	#define DS_CORE_ASSERT(x, ...) { if(!(x)) { DS_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); DS_DEBUGBREAK();}}
 #else
 	#define DS_ASSERT(x, ...) 
