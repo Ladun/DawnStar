@@ -155,13 +155,18 @@ namespace DawnStar
 
 		ImGui::SameLine();
 
-		DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
+		DrawComponent<TransformComponent>("Transform", entity, [entity](auto& component)
 		{
 			DawnStar::ImGuiUI::DrawVec3Control("Translation", component.Translation);
 			glm::vec3 rotation = glm::degrees(component.Rotation);
 			DawnStar::ImGuiUI::DrawVec3Control("Rotation", rotation);
 			component.Rotation = glm::radians(rotation);
 			DawnStar::ImGuiUI::DrawVec3Control("Scale", component.Scale, 1.0f);
+
+			if(entity.HasComponent<UI::LayoutComponent>())
+			{
+				ImGui::Text("Controlled by UI::Layout");
+			}
 		});
 		
 
@@ -204,7 +209,10 @@ namespace DawnStar
 											   component.AnchorMin, {1.0f, 1.0f}, 0.01f);
 			DawnStar::ImGuiUI::DrawVec2Control("Pivot", component.Pivot, 
 											   {0.0f, 0.0f}, {1.0f, 1.0f}, 0.01f);
-											   
+			
+			ImGui::DragFloat("Rotation", &component.Rotation, 0.1f, 0.0f, 0.0f);
+			ImGui::Spacing();
+
 			if(component.AnchorMin.x == component.AnchorMax.x)
 			{	
 				ImGui::DragFloat("X", &component.Box.x, 0.1f, 0.0f, 0.0f);
@@ -225,6 +233,17 @@ namespace DawnStar
 				ImGui::DragFloat("Top", &component.Box.y, 0.1f, 0.0f, 0.0f);
 				ImGui::DragFloat("Bottom", &component.Box.w, 0.1f, 0.0f, 0.0f);
 			}
+		});
+
+		DrawComponent<UI::ButtonComponent>("UI Button", entity, [](auto& component)
+		{
+			ImGui::ColorEdit4("Over color", glm::value_ptr(component.overColor));			
+			ImGui::ColorEdit4("Press color", glm::value_ptr(component.pressColor));			
+			ImGui::ColorEdit4("Normal color", glm::value_ptr(component.normalColor));	
+			
+			ImGui::Text("_over %d", component._over);
+			ImGui::Text("_press %d", component._press);
+			ImGui::Text("_release %d", component._release);		
 		});
 
 

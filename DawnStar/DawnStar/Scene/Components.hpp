@@ -78,9 +78,9 @@ namespace DawnStar
 			glm::vec2 AnchorMax{1.0f, 1.0f};  // Anchor's maximum point normalized to parent size (0 to 1)
 			glm::vec2 Pivot{0.5, 0.5};      // Pivot point normalized to the rectangle's size (0 to 1)
 
-			float rotation = 0.0f;
-			glm::vec2 Position;
 			glm::vec4 Box; //( x, y, w, h) or (l, t, r, b)
+			float Rotation = 0.0f;
+
 		};
 
 		struct SpriteRendererComponent
@@ -93,7 +93,18 @@ namespace DawnStar
 
 		struct ButtonComponent
 		{
-			int temp = 0;
+			friend class UISystem;
+		
+
+			std::function<void()> onClick;
+			glm::vec4 overColor{1.0f};
+			glm::vec4 pressColor{1.0f};
+			glm::vec4 normalColor{1.0f};
+
+		public:
+			bool _over;
+			bool _press;
+			bool _release;
 		};
 	}
 	

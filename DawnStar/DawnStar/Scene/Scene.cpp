@@ -189,10 +189,19 @@ namespace DawnStar
 		{
 			DS_PROFILE_SCOPE("Submit UI Data");
 
-			const auto view = _registry.view<UI::SpriteRendererComponent>();
-			for (auto &&[entity, sprite] : view.each())
+			const auto view = _registry.view<UI::SpriteRendererComponent, UI::LayoutComponent>();
+			for (auto &&[entity, sprite, layout] : view.each())
 			{
-				Renderer2D::DrawQuad(Entity(entity, this).GetWorldTransform(), sprite.Texture, sprite.Color, sprite.TilingFactor);
+				const auto& transform = Entity(entity, this).GetTransform();
+				// Calcuate pivot based rotation transform matrix
+				// mat = Translation * Rotation * PivotTranslation * Scale
+				glm::mat4 mat = glm::translate(glm::mat4(1.0f), transform.Translation) * 
+								glm::toMat4(glm::quat(transform.Rotation)) * 
+								glm::translate(glm::mat4(1.0f), glm::vec3((0.5f - layout.Pivot.x) * transform.Scale.x,
+                                                                          (0.5f - layout.Pivot.y) * transform.Scale.y, 0.0f)) * 
+								glm::scale(glm::mat4(1.0f), transform.Scale);				
+
+				Renderer2D::DrawQuad(mat, sprite.Texture, sprite.Color, sprite.TilingFactor);
 			}
 
 		}
@@ -286,12 +295,17 @@ namespace DawnStar
 	void Scene::OnComponentAdded<UI::LayoutComponent>(Entity entity, UI::LayoutComponent& component)
 	{
 	}
+
 	template<>
 	void Scene::OnComponentAdded<UI::SpriteRendererComponent>(Entity entity, UI::SpriteRendererComponent& component)
 	{
+		DS_CORE_ASSERT(entity.HasComponent<UI::LayoutComponent>(), "Don't have layout component");
 	}
+
 	template<>
 	void Scene::OnComponentAdded<UI::ButtonComponent>(Entity entity, UI::ButtonComponent& component)
 	{
+		DS_CORE_ASSERT(entity.HasComponent<UI::SpriteRendererComponent>(), "Don't have sprite renderer component");
+
 	}
 }

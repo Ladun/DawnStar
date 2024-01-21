@@ -1,8 +1,10 @@
 #include <DawnStar/dspch.hpp>
 #include <DawnStar/Game/UI/UISystem.hpp>
+#include <DawnStar/Game/Utils.hpp>
 #include <DawnStar/Scene/Scene.hpp>
 #include <DawnStar/Scene/Entity.hpp>
 #include <DawnStar/Core/Application.hpp>
+#include <DawnStar/Core/Input.hpp>
 
 namespace DawnStar::UI
 {
@@ -10,14 +12,22 @@ namespace DawnStar::UI
     void UISystem::OnUpdate(DawnStar::Timestep ts, entt::registry& registry)
     {
         // Update ui components position
+
+        UpdateLayoutSystem(ts, registry);
+        UpdateButtonSystem(ts, registry);
+    }
+
+    void UISystem::UpdateLayoutSystem(DawnStar::Timestep ts, entt::registry &registry)
+    {
+		DS_PROFILE_SCOPE();
         const auto view = registry.view<TransformComponent, UI::LayoutComponent, RelationshipComponent>();
         for(auto &&[entity, transform, layout, relationShip] : view.each())
         {   
             glm::vec2 parentSize;
             if(_scene->HasEntity(relationShip.Parent))
             {
-                auto parent = _scene->GetEntity(relationShip.Parent);
-                parentSize = {_scene->GetViewportWidth(), _scene->GetViewportHeight()};
+                auto parentTransform = _scene->GetEntity(relationShip.Parent).GetTransform();
+                parentSize = {parentTransform.Scale.x, parentTransform.Scale.y};
             }
             else
             {
@@ -28,7 +38,11 @@ namespace DawnStar::UI
             if(layout.AnchorMin.x == layout.AnchorMax.x)
             {
                 transform.Scale.x = layout.Box.z;
-                transform.Translation.x = layout.Box.x + transform.Scale.x * 0.5f - layout.Pivot.x * transform.Scale.x;
+                // Currently, it is a coordinate system based on the center, 
+                // so to convert it into a coordinate system where the lower-left corner is the reference, 
+                // we use 1 - pivot.
+                transform.Translation.x = layout.Box.x;
+                
             }
             else
             {
@@ -37,13 +51,13 @@ namespace DawnStar::UI
                 
                 // Anchor left position + adjusted position by pivot
                 transform.Translation.x = layout.AnchorMin.x * parentSize.x + layout.Box.x + 
-                                            transform.Scale.x * 0.5f;
+                                          transform.Scale.x * layout.Pivot.x;
             }
 
             if(layout.AnchorMin.y == layout.AnchorMax.y)
             {
                 transform.Scale.y = layout.Box.w;
-                transform.Translation.y = layout.Box.y + transform.Scale.y * 0.5f - layout.Pivot.y * transform.Scale.y;
+                transform.Translation.y = layout.Box.y;
             }
             else
             {
@@ -52,9 +66,65 @@ namespace DawnStar::UI
                 
                 // Anchor left position + adjusted position by pivot
                 transform.Translation.y = layout.AnchorMin.y * parentSize.y + layout.Box.w + 
-                                            transform.Scale.y * 0.5f;
+                                          transform.Scale.y * layout.Pivot.y;
             }
+            transform.Rotation.z = glm::radians(layout.Rotation);
+
+        }
+    }
+
+    void UISystem::UpdateButtonSystem(DawnStar::Timestep ts, entt::registry &registry)
+    {
+		DS_PROFILE_SCOPE();
+        const auto view = registry.view<TransformComponent, UI::ButtonComponent, 
+                                        UI::SpriteRendererComponent, UI::LayoutComponent>();
+
+        auto mousePos = ToScreenCoord(Input::GetMousePosition());
+        for(auto &&[entity, transform, button, sprite, layout] : view.each())
+        {   
+            float left = transform.Translation.x - layout.Pivot.x * transform.Scale.x;
+            float top = transform.Translation.y + (1 - layout.Pivot.x) * transform.Scale.x;
+            float right = transform.Translation.x + (1 - layout.Pivot.x) * transform.Scale.x;
+            float bottom = transform.Translation.y - layout.Pivot.y * transform.Scale.x;
+
+            // Check over
+            
+            button._release = false;
+            if(left < mousePos.x  && mousePos.x < right &&
+               bottom < mousePos.y && mousePos.y < top)
+            {
+                if(!button._over)
+                {
+                    button._over = true;
+                    sprite.Color = button.overColor;
+                }
+            }
+            else
+            {
+                button._over = false;
+                sprite.Color = button.normalColor;
+            }
+
+            if(button._over)
+            {
+                if(button._press && Input::IsMouseButtonUp(Mouse::ButtonLeft))
+                {
+                    button._press = false;
+                    button._release = true;
+                    sprite.Color = button.overColor;
+
+                    button.onClick();
+                }
+
+                if(Input::IsMouseButtonDown(Mouse::ButtonLeft))
+                {
+                    button._press = true;
+                    sprite.Color = button.pressColor;
+                }
+            }
+
 
         }
     }
 } // namespace DawnStar::UI
+
