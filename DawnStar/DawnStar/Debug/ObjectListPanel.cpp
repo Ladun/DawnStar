@@ -126,6 +126,12 @@ namespace DawnStar
 
 				ImGui::EndPopup();
 			}
+			
+			ImGui::SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
+			if (ImGui::Button("+", ImVec2{ lineHeight, lineHeight }))
+			{
+				ImGui::OpenPopup("ComponentSettings");
+			}
 
 			if (open)
 			{
@@ -172,6 +178,7 @@ namespace DawnStar
 
 		DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
 		{
+			ImGui::Checkbox("Enable", &component.Enable);
 			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));			
 
 			float frameHeight = ImGui::GetFrameHeight();
@@ -188,6 +195,7 @@ namespace DawnStar
 
 		DrawComponent<UI::SpriteRendererComponent>("UI Sprite Renderer", entity, [](auto& component)
 		{
+			ImGui::Checkbox("Enable", &component.Enable);
 			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));			
 
 			float frameHeight = ImGui::GetFrameHeight();

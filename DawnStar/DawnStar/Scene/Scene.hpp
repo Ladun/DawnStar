@@ -55,7 +55,11 @@ namespace DawnStar
 		void OnViewportResize(uint32_t width, uint32_t height);
 		Entity GetPrimaryCameraEntity();
 
-		void SortForSprites();
+		template<typename Component>
+		void SortComponents(std::function<bool(const Component&, const Component&)> compare)
+		{			
+			_registry.sort<Component>(compare);
+		}
 
 	public:
 		uint32_t GetViewportWidth() { return _viewportWidth; }

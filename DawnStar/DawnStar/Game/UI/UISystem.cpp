@@ -76,37 +76,47 @@ namespace DawnStar::UI
     void UISystem::UpdateButtonSystem(DawnStar::Timestep ts, entt::registry &registry)
     {
 		DS_PROFILE_SCOPE();
-        const auto view = registry.view<TransformComponent, UI::ButtonComponent, 
-                                        UI::SpriteRendererComponent, UI::LayoutComponent>();
+        const auto view = registry.view<TransformComponent, UI::SpriteRendererComponent,
+                                        UI::LayoutComponent>();
 
+
+        _currentEntity = Entity();
         auto mousePos = ToScreenCoord(Input::GetMousePosition());
-        for(auto &&[entity, transform, button, sprite, layout] : view.each())
+        for(auto &&[entity, transform, sprite, layout] : view.each())
         {   
             float left = transform.Translation.x - layout.Pivot.x * transform.Scale.x;
-            float top = transform.Translation.y + (1 - layout.Pivot.x) * transform.Scale.x;
+            float top = transform.Translation.y + (1 - layout.Pivot.y) * transform.Scale.y;
             float right = transform.Translation.x + (1 - layout.Pivot.x) * transform.Scale.x;
-            float bottom = transform.Translation.y - layout.Pivot.y * transform.Scale.x;
+            float bottom = transform.Translation.y - layout.Pivot.y * transform.Scale.y;
 
-            // Check over
-            
+            bool intersection = left < mousePos.x  && mousePos.x < right &&
+                                bottom < mousePos.y && mousePos.y < top;
+
+            Entity ent = {entity, _scene.get()};
+            // If the mouse is over an object
+            if (intersection)
+            {
+                if(!_currentEntity && sprite.Enable && sprite.Interactable)
+                {
+                    _currentEntity = ent;
+                }
+            }
+
+            if (!ent.HasComponent<UI::ButtonComponent>())
+                continue;
+            auto& button = ent.GetComponent<UI::ButtonComponent>();
+
             button._release = false;
-            if(left < mousePos.x  && mousePos.x < right &&
-               bottom < mousePos.y && mousePos.y < top)
+            // Checking is mouse over or not
+            if(_currentEntity == ent)
             {
                 if(!button._over)
                 {
                     button._over = true;
                     sprite.Color = button.overColor;
                 }
-            }
-            else
-            {
-                button._over = false;
-                sprite.Color = button.normalColor;
-            }
 
-            if(button._over)
-            {
+                // Button action only on the object you are currently interacting with
                 if(button._press && Input::IsMouseButtonUp(Mouse::ButtonLeft))
                 {
                     button._press = false;
@@ -120,10 +130,13 @@ namespace DawnStar::UI
                 {
                     button._press = true;
                     sprite.Color = button.pressColor;
-                }
+                }                
+            }            
+            else
+            {
+                button._over = false;
+                sprite.Color = button.normalColor;
             }
-
-
         }
     }
 } // namespace DawnStar::UI

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DawnStar/Scene/SystemBase.hpp>
+#include <DawnStar/Scene/Entity.hpp>
 
 namespace DawnStar::UI
 {
@@ -14,5 +15,8 @@ namespace DawnStar::UI
     private:
         void UpdateLayoutSystem(DawnStar::Timestep ts, entt::registry& registry);
         void UpdateButtonSystem(DawnStar::Timestep ts, entt::registry& registry);
+
+    private:
+        Entity _currentEntity;
     };
 } // namespace DawnStar

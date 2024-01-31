@@ -20,6 +20,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glad)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/stb_image)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/optick)
 
+find_package(Freetype REQUIRED)
+
 # make exe file
 add_library(${PROJECT_NAME} STATIC 
             ${SOURCES}
@@ -27,17 +29,14 @@ add_library(${PROJECT_NAME} STATIC
 target_include_directories(${PROJECT_NAME} PUBLIC 
                            ${CMAKE_CURRENT_SOURCE_DIR}
                            ${CMAKE_CURRENT_SOURCE_DIR}/third-party
-                           ${CMAKE_CURRENT_SOURCE_DIR}/third-party/entt/include)
+                           ${CMAKE_CURRENT_SOURCE_DIR}/third-party/entt/include
+                           ${FREETYPE_INCLUDE_DIRS})
 
 # Linking
 target_link_libraries(${PROJECT_NAME}
-                      spdlog
-                      glm
-                      glfw
-                      glad
-                      stb_image
-                      imgui
-                      OptickCore)
+                      spdlog glm glfw
+                      glad stb_image imgui
+                      OptickCore ${FREETYPE_LIBRARIES})
 
 if(COMMAND target_precompile_headers)
     target_precompile_headers(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/DawnStar/dspch.hpp)

@@ -92,11 +92,6 @@ namespace DawnStar
 
 		_entityMap.erase(entity.GetUUID());
 		_registry.destroy(entity);
-
-		if(hasSprite)
-		{
-			SortForSprites();
-		}
 	}
 
     Entity Scene::Duplicate(Entity entity)
@@ -179,6 +174,9 @@ namespace DawnStar
 			const auto view = _registry.view<SpriteRendererComponent>();
 			for (auto &&[entity, sprite] : view.each())
 			{
+				if(sprite.Enable == false)
+					continue;
+					
 				Renderer2D::DrawQuad(Entity(entity, this).GetWorldTransform(), sprite.Texture, sprite.Color, sprite.TilingFactor);
 			}
 		}
@@ -192,6 +190,9 @@ namespace DawnStar
 			const auto view = _registry.view<UI::SpriteRendererComponent, UI::LayoutComponent>();
 			for (auto &&[entity, sprite, layout] : view.each())
 			{
+				if(sprite.Enable == false)
+					continue;
+
 				const auto& transform = Entity(entity, this).GetTransform();
 				// Calcuate pivot based rotation transform matrix
 				// mat = Translation * Rotation * PivotTranslation * Scale
@@ -255,15 +256,7 @@ namespace DawnStar
 		}
 		return {};
     }
-
-    void Scene::SortForSprites()
-    {
-		_registry.sort<SpriteRendererComponent>([](const auto& lhs, const auto& rhs)
-		{
-			return lhs.SortingOrder < rhs.SortingOrder;
-		});
-    }
-
+	
     template <typename T>
     void Scene::OnComponentAdded(Entity entity, T &component)
     {
@@ -307,5 +300,7 @@ namespace DawnStar
 	{
 		DS_CORE_ASSERT(entity.HasComponent<UI::SpriteRendererComponent>(), "Don't have sprite renderer component");
 
+		auto& sprite = entity.GetComponent<UI::SpriteRendererComponent>();
+		sprite.Interactable = true;
 	}
 }

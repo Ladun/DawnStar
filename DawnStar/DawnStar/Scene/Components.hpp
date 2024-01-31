@@ -11,6 +11,11 @@
 
 namespace DawnStar
 {
+	struct BaseComponent
+	{
+		bool Enable = true;
+	};
+
 	struct IDComponent
 	{
 		UUID ID;
@@ -49,7 +54,7 @@ namespace DawnStar
 		std::vector<UUID> Children;
 	};
 
-	struct SpriteRendererComponent
+	struct SpriteRendererComponent : public BaseComponent
 	{
 		glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
 		Ref<Texture2D> Texture = nullptr;
@@ -57,7 +62,7 @@ namespace DawnStar
 		float TilingFactor = 1.0f;
 	};
 
-	struct CameraComponent
+	struct CameraComponent : public BaseComponent
 	{
 		Camera Cam;
 		bool Primary = true;
@@ -72,7 +77,8 @@ namespace DawnStar
 	// UI Component
 	namespace UI
 	{
-		struct LayoutComponent // RequireComponents [TransformComponent]
+		// RequireComponents [TransformComponent]
+		struct LayoutComponent : public BaseComponent
 		{
 			glm::vec2 AnchorMin{0.0f, 0.0f};  // Anchor's minimum point normalized to parent size (0 to 1)
 			glm::vec2 AnchorMax{1.0f, 1.0f};  // Anchor's maximum point normalized to parent size (0 to 1)
@@ -83,15 +89,17 @@ namespace DawnStar
 
 		};
 
-		struct SpriteRendererComponent
+		struct SpriteRendererComponent : public BaseComponent
 		{
 			glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
 			Ref<Texture2D> Texture = nullptr;
 			int32_t SortingOrder = 0;
 			float TilingFactor = 1.0f;
+
+			bool Interactable = false;
 		};
 
-		struct ButtonComponent
+		struct ButtonComponent : public BaseComponent
 		{
 			friend class UISystem;
 		

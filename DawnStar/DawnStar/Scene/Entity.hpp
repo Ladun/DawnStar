@@ -29,7 +29,7 @@ namespace DawnStar
 		[[nodiscard]] T& GetComponent() const
 		{
 			DS_PROFILE_SCOPE()
-
+	
 			bool has_component = HasComponent<T>();
 			DS_CORE_ASSERT(has_component, "Entity does not have component");
 			return m_Scene->_registry.get<T>(m_EntityHandle);

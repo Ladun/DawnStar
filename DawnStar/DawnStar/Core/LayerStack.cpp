@@ -29,6 +29,7 @@ namespace DawnStar
 
 	void LayerStack::PopLayer(Layer* layer)
 	{
+		// TODO: free memory that layer used;
 		auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
 		if (it != m_Layers.end())
 		{
