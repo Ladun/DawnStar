@@ -18,45 +18,45 @@ namespace DawnStar
 
 		bool GetCurrentState(uint16_t key)
 		{        
-			auto it = m_CurrentState.find(key);
-        	if(it != m_CurrentState.end())
+			auto it = _currentState.find(key);
+        	if(it != _currentState.end())
 			{
 				return it->second;
 			}
 			else
 			{
-				m_CurrentState[key] = false;
+				_currentState[key] = false;
 				return false;
 			}
 		}
 		bool GetLastState(uint16_t key)
 		{        
-			auto it = m_LastState.find(key);
-        	if(it != m_LastState.end())
+			auto it = _lastState.find(key);
+        	if(it != _lastState.end())
 			{
 				return it->second;
 			}
 			else
 			{
-				m_LastState[key] = false;
+				_lastState[key] = false;
 				return false;
 			}
 		}
 
 		void SetCurrentState(uint16_t key, bool pressed)
 		{
-			m_CurrentState[key] = pressed;
+			_currentState[key] = pressed;
 
-			auto it = m_LastState.find(key);
-			if(it ==  m_LastState.end())
+			auto it = _lastState.find(key);
+			if(it ==  _lastState.end())
 			{
-				m_LastState[key] = !pressed;
+				_lastState[key] = !pressed;
 			}
 		}
 	public:
 		// Pressed = true, Released = false
-		std::unordered_map<uint16_t, bool> m_CurrentState;
-		std::unordered_map<uint16_t, bool> m_LastState;
+		std::unordered_map<uint16_t, bool> _currentState;
+		std::unordered_map<uint16_t, bool> _lastState;
 	};
 
 	class Input
@@ -83,8 +83,8 @@ namespace DawnStar
 		static void SetUpMouse(MouseCode key, bool pressed);
 
 	private:
-		static InputState m_KeyState;
-		static InputState m_MouseState;
+		static InputState _keyState;
+		static InputState _mouseState;
 
 	};
 }

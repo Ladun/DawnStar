@@ -14,3 +14,6 @@
 [submodule "DawnStar/third-party/optick"]
 	path = DawnStar/third-party/optick
 	url = https://github.com/bombomby/optick.git
+[submodule "DawnStar/third-party/msdf-atlas-gen"]
+	path = DawnStar/third-party/msdf-atlas-gen
+	url = https://github.com/Ladun/msdf-atlas-gen

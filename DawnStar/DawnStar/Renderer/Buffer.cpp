@@ -15,9 +15,9 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE()
 
-		// glCreateBuffers(1, &m_RendererID);
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		// glCreateBuffers(1, &_rendererID);
+		glGenBuffers(1, &_rendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
 	}
 
@@ -25,9 +25,9 @@ namespace DawnStar
 	{
 		// DS_PROFILE_SCOPE()
 
-		// glCreateBuffers(1, &m_RendererID);
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		// glCreateBuffers(1, &_rendererID);
+		glGenBuffers(1, &_rendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 	}
 
@@ -35,14 +35,14 @@ namespace DawnStar
 	{
 		// DS_PROFILE_SCOPE()
 
-		glDeleteBuffers(1, &m_RendererID);
+		glDeleteBuffers(1, &_rendererID);
 	}
 
 	void VertexBuffer::Bind() const
 	{
 		// DS_PROFILE_SCOPE()
 
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
 	}
 
 	void VertexBuffer::Unbind() const
@@ -54,7 +54,7 @@ namespace DawnStar
 
 	void VertexBuffer::SetData(const void* data, uint32_t size)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, _rendererID);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 	}
 
@@ -63,26 +63,26 @@ namespace DawnStar
 	/////////////////////////////////////////////////////////////////////////////////
 
 	IndexBuffer::IndexBuffer(uint32_t* indices, uint32_t count)
-		: m_Count(count)
+		: _count(count)
 	{
 		DS_PROFILE_SCOPE()
 
-		// glCreateBuffers(1, &m_RendererID);
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
+		// glCreateBuffers(1, &_rendererID);
+		glGenBuffers(1, &_rendererID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _rendererID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 	}
 	IndexBuffer::~IndexBuffer()
 	{
 		DS_PROFILE_SCOPE()
 
-		glDeleteBuffers(1, &m_RendererID);
+		glDeleteBuffers(1, &_rendererID);
 	}
 	void IndexBuffer::Bind() const
 	{
 		DS_PROFILE_SCOPE()
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _rendererID);
 	}
 	void IndexBuffer::Unbind() const
 	{

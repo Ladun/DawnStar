@@ -27,23 +27,23 @@ namespace DawnStar
         void PushLayer(Layer* layer);
         void PushOverlay(Layer* layer);
 
-        inline Window& GetWindow() {return *m_Window;}
+        inline Window& GetWindow() {return *_window;}
     
         void Close();
 
-        ImGuiLayer* GetImGuiLayer() {return m_ImGuiLayer; }
+        ImGuiLayer* GetImGuiLayer() {return _imGuiLayer; }
 
         static Application& Get() {return *s_Instance; }
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
     private:
-        Scope<Window> m_Window;
-        ImGuiLayer* m_ImGuiLayer;
-        bool m_Running = true;
-        bool m_Minimized = false;
-        LayerStack m_LayerStack ;
-        float m_LastFrameTime = 0.0f;
+        Scope<Window> _window;
+        ImGuiLayer* _imGuiLayer;
+        bool _running = true;
+        bool _minimized = false;
+        LayerStack _layerStack ;
+        float _lastFrameTime = 0.0f;
 
     private:
         static Application* s_Instance;

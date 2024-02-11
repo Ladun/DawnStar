@@ -35,21 +35,21 @@ namespace DawnStar
 
 		void OnUpdate();
 		
-		inline uint32_t GetWidth() const { return m_Data.Width; }
-		inline uint32_t GetHeight() const { return m_Data.Height; }
+		inline uint32_t GetWidth() const { return _data.Width; }
+		inline uint32_t GetHeight() const { return _data.Height; }
 
-		inline void SetEventCallback(const EventCallbackFn& callback) { m_Data.EventCallback = callback; }
+		inline void SetEventCallback(const EventCallbackFn& callback) { _data.EventCallback = callback; }
 		void SetVSync(bool enabled);
 		bool IsVSync() const;
 
-		inline void* GetNativeWindow() const { return m_Window; }
+		inline void* GetNativeWindow() const { return _window; }
 
 	private:
 		void Init(const WindowProps& props);
 		void Shutdown();
 	private:
-		GLFWwindow* m_Window;
-		Scope<GraphicsContext> m_Context;
+		GLFWwindow* _window;
+		Scope<GraphicsContext> _context;
 
 		struct WindowData
 		{
@@ -60,6 +60,6 @@ namespace DawnStar
 			EventCallbackFn EventCallback;
 		};
 
-		WindowData m_Data;
+		WindowData _data;
 	};
 } // namespace DawnStar

@@ -22,13 +22,13 @@ namespace DawnStar
         DS_CORE_ASSERT(!s_Instance, "Application already exists!");
         s_Instance = this;
 
-        m_Window = CreateScope<Window>(WindowProps(name, width, height));
-        m_Window->SetEventCallback(BIND_EVENT_FN(OnEvent));
+        _window = CreateScope<Window>(WindowProps(name, width, height));
+        _window->SetEventCallback(BIND_EVENT_FN(OnEvent));
 
         Renderer::Init();
 
-        m_ImGuiLayer = new ImGuiLayer();
-        PushOverlay(m_ImGuiLayer);
+        _imGuiLayer = new ImGuiLayer();
+        PushOverlay(_imGuiLayer);
     }
 
 	Application::~Application()
@@ -39,20 +39,20 @@ namespace DawnStar
 	void Application::PushLayer(Layer* layer)
 	{
 
-		m_LayerStack.PushLayer(layer);
+		_layerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* layer)
 	{
 
-		m_LayerStack.PushOverlay(layer);
+		_layerStack.PushOverlay(layer);
 		layer->OnAttach();
 	}
 
     void Application::Close()
 	{
-		m_Running = false;
+		_running = false;
 	}
 
     void Application::OnEvent(Event& e)
@@ -61,7 +61,7 @@ namespace DawnStar
         dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
         dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
 
-        for(auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
+        for(auto it = _layerStack.rbegin(); it != _layerStack.rend(); ++it)
         {
             if(e.Handled)
                 break;
@@ -72,37 +72,37 @@ namespace DawnStar
 	void Application::Run()
 	{
 
-		while (m_Running)
+		while (_running)
 		{
 			float time = (float)glfwGetTime();
-			Timestep timestep = time - m_LastFrameTime;
-			m_LastFrameTime = time;
+			Timestep timestep = time - _lastFrameTime;
+			_lastFrameTime = time;
 
-			if (!m_Minimized)
+			if (!_minimized)
 			{
 				{
 
-					for (Layer* layer : m_LayerStack)
+					for (Layer* layer : _layerStack)
 						layer->OnUpdate(timestep);
 				}
 
-				m_ImGuiLayer->Begin();
+				_imGuiLayer->Begin();
 				{
 
-					for (Layer* layer : m_LayerStack)
+					for (Layer* layer : _layerStack)
 						layer->OnImGuiRender();
 				}
-				m_ImGuiLayer->End();
+				_imGuiLayer->End();
 			}
 
 
 			Input::OnUpdate();
-			m_Window->OnUpdate();
+			_window->OnUpdate();
 		}
 	}
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		m_Running = false;
+		_running = false;
 		return true;
 	}
 
@@ -110,11 +110,11 @@ namespace DawnStar
 	{
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
-			m_Minimized = true;
+			_minimized = true;
 			return false;
 		}
 
-		m_Minimized = false;
+		_minimized = false;
 		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
 		return false;

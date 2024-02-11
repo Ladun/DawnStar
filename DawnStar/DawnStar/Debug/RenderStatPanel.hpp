@@ -11,7 +11,7 @@ namespace DawnStar
         void OnImGuiRender();
 
     private:
-		float m_FpsValues[50];
-		std::vector<float> m_FrameTimes;
+        float _fpsValues[50];
+        std::vector<float> _frameTimes;
     };    
 } // namespace DawnStar

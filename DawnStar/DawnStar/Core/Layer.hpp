@@ -18,9 +18,9 @@ namespace DawnStar
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 
-		inline const std::string& GetName() const { return m_DebugName; }
+		inline const std::string& GetName() const { return _debugName; }
 
 	protected:
-		std::string m_DebugName;
+		std::string _debugName;
 	};
 } // namespace DawnStar

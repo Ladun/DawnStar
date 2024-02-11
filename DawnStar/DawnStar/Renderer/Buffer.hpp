@@ -72,33 +72,33 @@ namespace DawnStar
 		BufferLayout() {}
 
 		BufferLayout(const std::initializer_list<BufferElement> element)
-			: m_Elements(element)
+			: _elements(element)
 		{
 			CalculateOffsetAndStride();
 		}
 
-		inline uint32_t GetStride() const { return m_Stride; }
-		inline const std::vector<BufferElement>& GetElements() const { return m_Elements; }
+		inline uint32_t GetStride() const { return _stride; }
+		inline const std::vector<BufferElement>& GetElements() const { return _elements; }
 
-		std::vector<BufferElement>::iterator begin() { return m_Elements.begin(); }
-		std::vector<BufferElement>::iterator end() { return m_Elements.end(); }
-		std::vector<BufferElement>::const_iterator begin() const { return m_Elements.begin(); }
-		std::vector<BufferElement>::const_iterator end() const { return m_Elements.end(); }
+		std::vector<BufferElement>::iterator begin() { return _elements.begin(); }
+		std::vector<BufferElement>::iterator end() { return _elements.end(); }
+		std::vector<BufferElement>::const_iterator begin() const { return _elements.begin(); }
+		std::vector<BufferElement>::const_iterator end() const { return _elements.end(); }
 	private:
 		void CalculateOffsetAndStride()
 		{
 			uint32_t offset = 0;
-			m_Stride = 0;
-			for (auto& element : m_Elements)
+			_stride = 0;
+			for (auto& element : _elements)
 			{
 				element.Offset = offset;
 				offset += element.Size;
-				m_Stride += element.Size;
+				_stride += element.Size;
 			}
 		}
 	private:
-		std::vector<BufferElement> m_Elements;
-		uint32_t m_Stride = 0;
+		std::vector<BufferElement> _elements;
+		uint32_t _stride = 0;
 	};
 
 	class VertexBuffer
@@ -111,14 +111,14 @@ namespace DawnStar
 		void Bind() const;
 		void Unbind() const;
 
-		const BufferLayout& GetLayout() const { return m_Layout; }
-		void SetLayout(const BufferLayout& layout) { m_Layout = layout; }
+		const BufferLayout& GetLayout() const { return _layout; }
+		void SetLayout(const BufferLayout& layout) { _layout = layout; }
 
 		void SetData(const void* data, uint32_t size);
 
 	private:
-		uint32_t m_RendererID;
-		BufferLayout m_Layout;
+		uint32_t _rendererID;
+		BufferLayout _layout;
 	};
 
 	class IndexBuffer
@@ -130,10 +130,10 @@ namespace DawnStar
 		void Bind() const;
 		void Unbind() const;
 
-		uint32_t GetCount() const { return m_Count; }
+		uint32_t GetCount() const { return _count; }
 
 	private:
-		uint32_t m_RendererID;
-		uint32_t m_Count;
+		uint32_t _rendererID;
+		uint32_t _count;
 	};
 }

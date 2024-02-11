@@ -9,7 +9,7 @@
 namespace DawnStar
 {
     GraphicsContext::GraphicsContext(GLFWwindow* windowHandle)
-        : m_WindowHandle(windowHandle)
+        : _windowHandle(windowHandle)
     {
         DS_CORE_ASSERT(windowHandle, "Window handle is null!!");   
     }
@@ -18,7 +18,7 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE();
 
-		glfwMakeContextCurrent(m_WindowHandle);
+		glfwMakeContextCurrent(_windowHandle);
 		int status = gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
 		DS_CORE_ASSERT(status, "Failed to initialize Glad!");
 
@@ -41,6 +41,6 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE();
 
-		glfwSwapBuffers(m_WindowHandle);
+		glfwSwapBuffers(_windowHandle);
 	}
 } // namespace DawnStar

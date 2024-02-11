@@ -8,7 +8,14 @@ namespace BasicExample
         const auto view = registry.view<DawnStar::TransformComponent, DawnStar::SpriteRendererComponent>();
         for(auto &&[entity, transform, sprite] : view.each())
         {
-            transform.Rotation.z += ts * 90 * (3.14 / 180);
+            float angle = glm::degrees(transform.Rotation.z);
+            angle += 90 * ts;
+            if(angle > 360)
+            {
+                angle -= 360;
+            }
+
+            transform.Rotation.z = glm::radians(angle);
         }
     }
 }

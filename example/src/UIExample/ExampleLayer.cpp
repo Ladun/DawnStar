@@ -35,7 +35,7 @@ namespace UIExample
 			m_TestEntity = m_Scene->CreateEntity("Test object");
 
 			// Texture setting
-			auto& sprite = m_TestEntity.AddComponent<DawnStar::UISpriteRendererComponent>();
+			auto& sprite = m_TestEntity.AddComponent<DawnStar::UI::SpriteRendererComponent>();
 			sprite.Color = {0.7f, 0.5f, 0.3f, 1.0f};
 		}
 		{
@@ -78,7 +78,7 @@ namespace UIExample
 				DawnStar::ImGuiUI::DrawVec3Control("Translation", transform.Translation);
 				DawnStar::ImGuiUI::DrawVec3Control("Rotation", transform.Rotation);
 				DawnStar::ImGuiUI::DrawVec3Control("Scale", transform.Scale);
-				auto& sprite = m_TestEntity.GetComponent<DawnStar::UISpriteRendererComponent>();
+				auto& sprite = m_TestEntity.GetComponent<DawnStar::UI::SpriteRendererComponent>();
 				ImGui::ColorEdit4("Color", glm::value_ptr(sprite.Color));	
 			}	
 		}

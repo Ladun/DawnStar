@@ -4,6 +4,24 @@
 
 namespace DawnStar
 {
+
+	enum class ImageFormat
+	{
+		None = 0,
+		R8,
+		RGB8,
+		RGBA8,
+		RGBA32F
+	};
+
+	struct TextureSpecification
+	{
+		uint32_t Width = 1;
+		uint32_t Height = 1;
+		ImageFormat Format = ImageFormat::RGBA8;
+		bool GenerateMips = true;
+	};
+
 	class Texture
 	{
 	public:
@@ -25,16 +43,17 @@ namespace DawnStar
 	class Texture2D : public Texture
 	{
 	public:
-		Texture2D(uint32_t width, uint32_t height);
+		Texture2D(const TextureSpecification& specification);
 		Texture2D(const std::string& path);
-		virtual ~Texture2D();
-        
+		virtual ~Texture2D();        
+		
+		const TextureSpecification& GetSpecification() const { return _specification; }
 
-		virtual uint32_t GetWidth() const override {return m_Width; }
-		virtual uint32_t GetHeight() const override {return m_Height; }
-		virtual uint32_t GetRendererID() const override {return m_RendererID; }
+		virtual uint32_t GetWidth() const override {return _width; }
+		virtual uint32_t GetHeight() const override {return _height; }
+		virtual uint32_t GetRendererID() const override {return _rendererID; }
 
-		virtual bool IsLoaded() const override { return m_IsLoaded; }
+		virtual bool IsLoaded() const override { return _isLoaded; }
 
 		virtual void SetData(void* data, uint32_t size) override;
 
@@ -42,12 +61,13 @@ namespace DawnStar
         
 
 	private:
-		std::string m_Path;
+		TextureSpecification _specification;
+		std::string _path;
 
-		uint32_t m_Width, m_Height;
-		uint32_t m_RendererID;
-		unsigned int m_InternalFormat, m_DataFormat;
+		uint32_t _width, _height;
+		uint32_t _rendererID;
+		unsigned int _internalFormat, _dataFormat;
 
-		bool m_IsLoaded = false;
+		bool _isLoaded = false;
 	};    
 } // namespace DawnStar

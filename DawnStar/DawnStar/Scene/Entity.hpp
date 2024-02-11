@@ -19,9 +19,9 @@ namespace DawnStar
 		{
 			DS_PROFILE_SCOPE()
 
-			DS_CORE_ASSERT(m_Scene, "Scene is null!")
-			T& component = m_Scene->_registry.emplace_or_replace<T>(m_EntityHandle, std::forward<Args>(args)...);
-			m_Scene->OnComponentAdded<T>(*this, component);
+			DS_CORE_ASSERT(_scene, "Scene is null!")
+			T& component = _scene->_registry.emplace_or_replace<T>(_entityHandle, std::forward<Args>(args)...);
+			_scene->OnComponentAdded<T>(*this, component);
 			return component;
 		}
 
@@ -32,7 +32,7 @@ namespace DawnStar
 	
 			bool has_component = HasComponent<T>();
 			DS_CORE_ASSERT(has_component, "Entity does not have component");
-			return m_Scene->_registry.get<T>(m_EntityHandle);
+			return _scene->_registry.get<T>(_entityHandle);
 		}
 
 		template<typename T>
@@ -40,8 +40,8 @@ namespace DawnStar
 		{
 			DS_PROFILE_SCOPE()
 
-			DS_CORE_ASSERT(m_Scene, "Scene is null!")
-			return m_Scene->_registry.all_of<T>(m_EntityHandle);
+			DS_CORE_ASSERT(_scene, "Scene is null!")
+			return _scene->_registry.all_of<T>(_entityHandle);
 		}
 
 		template<typename T>
@@ -50,7 +50,7 @@ namespace DawnStar
 			DS_PROFILE_SCOPE()
 
 			DS_CORE_ASSERT(HasComponent<T>(), "Entity does not have component!")
-			m_Scene->_registry.remove<T>(m_EntityHandle);
+			_scene->_registry.remove<T>(_entityHandle);
 		}
 
 		[[nodiscard]] UUID GetUUID() const { return GetComponent<IDComponent>().ID; }
@@ -62,17 +62,17 @@ namespace DawnStar
 		{
 			DS_PROFILE_SCOPE()
 
-			if (!m_Scene)
+			if (!_scene)
 				return {};
 
 			const auto& rc = GetComponent<RelationshipComponent>();
-			return rc.Parent != 0 ? m_Scene->GetEntity(rc.Parent) : Entity {};
+			return rc.Parent != 0 ? _scene->GetEntity(rc.Parent) : Entity {};
 		}
 		void SetParent(Entity parent) const
 		{
 			DS_PROFILE_SCOPE()
 
-			DS_CORE_ASSERT(m_Scene->_entityMap.contains(parent.GetUUID()), "Parent is not in the same scene as entity")
+			DS_CORE_ASSERT(_scene->_entityMap.contains(parent.GetUUID()), "Parent is not in the same scene as entity")
 			Deparent();
 			
 			auto& rc = GetComponent<RelationshipComponent>();
@@ -109,7 +109,7 @@ namespace DawnStar
 
 			const auto& transform = GetTransform();
 			const auto& rc = GetRelationship();
-			const Entity parent = m_Scene->GetEntity(rc.Parent);
+			const Entity parent = _scene->GetEntity(rc.Parent);
 			const glm::mat4 parentTransform = parent ? parent.GetWorldTransform() : glm::mat4(1.0f);
 			return parentTransform * glm::translate(glm::mat4(1.0f), transform.Translation) * glm::toMat4(glm::quat(transform.Rotation)) * glm::scale(glm::mat4(1.0f), transform.Scale);
 		}
@@ -122,16 +122,16 @@ namespace DawnStar
 			return glm::translate(glm::mat4(1.0f), transform.Translation) * glm::toMat4(glm::quat(transform.Rotation)) * glm::scale(glm::mat4(1.0f), transform.Scale);
 		}
 
-		[[nodiscard]] Scene* GetScene() const { return m_Scene; }
+		[[nodiscard]] Scene* GetScene() const { return _scene; }
 
-		operator bool() const { return m_EntityHandle != entt::null && m_Scene != nullptr && m_Scene->_registry.valid(m_EntityHandle); }
-		operator entt::entity() const { return m_EntityHandle; }
-		operator uint32_t() const { return static_cast<uint32_t>(m_EntityHandle); }
+		operator bool() const { return _entityHandle != entt::null && _scene != nullptr && _scene->_registry.valid(_entityHandle); }
+		operator entt::entity() const { return _entityHandle; }
+		operator uint32_t() const { return static_cast<uint32_t>(_entityHandle); }
 
-		bool operator==(const Entity& other) const { return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene; }
+		bool operator==(const Entity& other) const { return _entityHandle == other._entityHandle && _scene == other._scene; }
         
 	private:
-		entt::entity m_EntityHandle = entt::null;
-		Scene* m_Scene = nullptr;
+		entt::entity _entityHandle = entt::null;
+		Scene* _scene = nullptr;
     };
 } // namespace DawnStar

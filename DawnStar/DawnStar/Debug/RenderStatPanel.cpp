@@ -9,7 +9,7 @@
 namespace DawnStar
 {
     RenderStatPanel::RenderStatPanel():
-        m_FpsValues{}
+        _fpsValues{}
     {
 
     }
@@ -20,15 +20,15 @@ namespace DawnStar
 
         float avg = 0.0f;
 
-        const size_t size = m_FrameTimes.size();
+        const size_t size = _frameTimes.size();
         if(size >= 50)
-            m_FrameTimes.erase(m_FrameTimes.begin());
+            _frameTimes.erase(_frameTimes.begin());
 
-        m_FrameTimes.emplace_back(ImGui::GetIO().Framerate);
+        _frameTimes.emplace_back(ImGui::GetIO().Framerate);
         for (uint32_t i = 0; i < size; i++)
         {
-            const float frameTime = m_FrameTimes[i];
-            m_FpsValues[i] = frameTime;
+            const float frameTime = _frameTimes[i];
+            _fpsValues[i] = frameTime;
             avg += frameTime;
         }
         
@@ -56,7 +56,7 @@ namespace DawnStar
 
         ImGui::Separator();
 
-        ImGui::PlotLines("##FPS", m_FpsValues, static_cast<int>(size));
+        ImGui::PlotLines("##FPS", _fpsValues, static_cast<int>(size));
         ImGui::Text("FPS: %lf", static_cast<double>(avg));
         const double fps = (1.0 / static_cast<double>(avg)) * 1000.0;
         ImGui::Text("Frame time (ms): %lf", fps);

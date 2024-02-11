@@ -23,12 +23,13 @@ Right now, DawnStar Game Engine is very bare-bones. Its most remarkable features
 | -------               | -----------                                                                           | ------   |
 | **ECS support**       | Entity Component System approach through *entt*.                                      | Done ✔️ |
 | **2D Renderer**       | 2D batch renderer supporting OpenGL.                                                  | Done ✔️ |
+| **Simple UI System**         | Buttons, UI images, image scaling according to screen ratio, etc., overall in-game UI system  | Done 💻 |
 
 ## Planned Features
 | Feature               | Description                                                                           | Status   |
 | -------               | -----------                                                                           | ------   |
-| **UI System**         | Buttons, UI images, image scaling according to screen ratio, etc., overall in-game UI system  | WIP 💻 |
-| **ImGui support**     | In-game debug UI using *dear imgui*.                                                  | WIP 💻  |
+| **Text drawing**     | Drawing  font using *msdf-atlas-gen*.       | WIP 💻  |
+| **ImGui support**     | In-game debug UI using *dear               | WIP 💻  |
 | **2D Physics**        | 2D Physics using *Box2D* with Rigidbody, Box and Circle Colliders and joints.         | TODO 📋 |
 | **3D Renderer**       | Basic 3D renderer with lighting, IBL and PBR workflow supporting OpenGL.              | TODO 📋 |
 | **Shadow Support**    | Soft and Hard shadow support in OpenGL 3D Renderer.                                   | TODO 📋 |

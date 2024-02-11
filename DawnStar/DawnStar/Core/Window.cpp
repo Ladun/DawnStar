@@ -34,9 +34,9 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE();
 
-		m_Data.Title = props.Title;
-		m_Data.Width = props.Width;
-		m_Data.Height = props.Height;
+		_data.Title = props.Title;
+		_data.Width = props.Width;
+		_data.Height = props.Height;
 
 
 		DS_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
@@ -52,18 +52,18 @@ namespace DawnStar
 
 		{
 			DS_PROFILE_SCOPE("glfwCreateWindow");
-			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+			_window = glfwCreateWindow((int)props.Width, (int)props.Height, _data.Title.c_str(), nullptr, nullptr);
 			++s_GLFWWindowCount;
 		}
 
-		m_Context = CreateScope<GraphicsContext>(m_Window);
-		m_Context->Init();
+		_context = CreateScope<GraphicsContext>(_window);
+		_context->Init();
 
-		glfwSetWindowUserPointer(m_Window, &m_Data);
+		glfwSetWindowUserPointer(_window, &_data);
 		SetVSync(true);
 
 		// Set GLFW callback;
-		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
+		glfwSetWindowSizeCallback(_window, [](GLFWwindow* window, int width, int height)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 				data.Width = width;
@@ -73,14 +73,14 @@ namespace DawnStar
 				data.EventCallback(event);
 			});
 
-		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
+		glfwSetWindowCloseCallback(_window, [](GLFWwindow* window)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 				WindowCloseEvent event;
 				data.EventCallback(event);
 			});
 
-		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+		glfwSetKeyCallback(_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -108,7 +108,7 @@ namespace DawnStar
 				Input::SetUpKey(key, action!=GLFW_RELEASE);
 			});
 
-		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
+		glfwSetCharCallback(_window, [](GLFWwindow* window, unsigned int keycode)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -116,7 +116,7 @@ namespace DawnStar
 				data.EventCallback(event);
 			});
 
-		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
+		glfwSetMouseButtonCallback(_window, [](GLFWwindow* window, int button, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -138,7 +138,7 @@ namespace DawnStar
 				Input::SetUpMouse(button, action==GLFW_PRESS);
 			});
 
-		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
+		glfwSetScrollCallback(_window, [](GLFWwindow* window, double xOffset, double yOffset)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -146,7 +146,7 @@ namespace DawnStar
 				data.EventCallback(event);
 			});
 
-		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
+		glfwSetCursorPosCallback(_window, [](GLFWwindow* window, double xPos, double yPos)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
@@ -160,7 +160,7 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE();
 
-		glfwDestroyWindow(m_Window);
+		glfwDestroyWindow(_window);
 
 		--s_GLFWWindowCount;
 		if (s_GLFWWindowCount == 0)
@@ -174,7 +174,7 @@ namespace DawnStar
 		DS_PROFILE_SCOPE();
 
 		glfwPollEvents();
-		m_Context->SwapBuffer();
+		_context->SwapBuffer();
 	}
 
 	void Window::SetVSync(bool enabled)
@@ -186,11 +186,11 @@ namespace DawnStar
 		else
 			glfwSwapInterval(0);
 
-		m_Data.VSync = enabled;
+		_data.VSync = enabled;
 	}
 
 	bool Window::IsVSync() const
 	{
-		return m_Data.VSync;
+		return _data.VSync;
 	}
 } // namespace DawnStar

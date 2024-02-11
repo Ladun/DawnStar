@@ -16,12 +16,12 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE()
 		
-		m_ProjectionType = ProjectionType::Perspective;
+		_projectionType = ProjectionType::Perspective;
 
 		
-		m_PerspectiveFOV = verticalFov;
-		m_PerspectiveNear = nearClip;
-		m_PerspectiveFar = farClip;
+		_perspectiveFOV = verticalFov;
+		_perspectiveNear = nearClip;
+		_perspectiveFar = farClip;
 
 		RecalculateProjection();
 	}
@@ -30,11 +30,11 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE()
 		
-		m_ProjectionType = ProjectionType::Orthographic;
+		_projectionType = ProjectionType::Orthographic;
 		
-		m_OrthographicSize = size;
-		m_OrthographicNear = nearClip;
-		m_OrthographicFar = farClip;
+		_orthographicSize = size;
+		_orthographicNear = nearClip;
+		_orthographicFar = farClip;
 
 		RecalculateProjection();
 	}
@@ -43,7 +43,7 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE()
 		
-		m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
+		_aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 		RecalculateProjection();
 	}
 
@@ -51,18 +51,18 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE()
 		
-		if(m_ProjectionType == ProjectionType::Perspective)
+		if(_projectionType == ProjectionType::Perspective)
 		{
-			m_Projection = glm::perspective(m_PerspectiveFOV, m_AspectRatio, m_PerspectiveNear, m_PerspectiveFar);
+			_projection = glm::perspective(_perspectiveFOV, _aspectRatio, _perspectiveNear, _perspectiveFar);
 		}
 		else
 		{
-			const float orthoLeft = -m_OrthographicSize * m_AspectRatio * 0.5f;
-			const float orthoRight = m_OrthographicSize * m_AspectRatio * 0.5f;
-			const float orthoBottom = -m_OrthographicSize * 0.5f;
-			const float orthoTop = m_OrthographicSize * 0.5f;
+			const float orthoLeft = -_orthographicSize * _aspectRatio * 0.5f;
+			const float orthoRight = _orthographicSize * _aspectRatio * 0.5f;
+			const float orthoBottom = -_orthographicSize * 0.5f;
+			const float orthoTop = _orthographicSize * 0.5f;
 
-			m_Projection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, m_OrthographicNear, m_OrthographicFar);
+			_projection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop, _orthographicNear, _orthographicFar);
 		}
 	}
 	

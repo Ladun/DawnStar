@@ -5,7 +5,7 @@
 
 namespace DawnStar
 {
-    Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
+    Renderer::SceneData* Renderer::_sceneData = new Renderer::SceneData;
 
 	void Renderer::Init()
 	{

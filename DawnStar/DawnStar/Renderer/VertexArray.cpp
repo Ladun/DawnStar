@@ -30,21 +30,21 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE();
 
-		glGenVertexArrays(1, &m_RendererID);
+		glGenVertexArrays(1, &_rendererID);
 	}
 
 	VertexArray::~VertexArray()
 	{
 		DS_PROFILE_SCOPE();
 
-		glDeleteVertexArrays(1, &m_RendererID);
+		glDeleteVertexArrays(1, &_rendererID);
 	}
 
 	void VertexArray::Bind() const
 	{
 		DS_PROFILE_SCOPE();
 
-		glBindVertexArray(m_RendererID);
+		glBindVertexArray(_rendererID);
 	}
 
 	void VertexArray::Unbind() const
@@ -61,7 +61,7 @@ namespace DawnStar
 
 		DS_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 
-		glBindVertexArray(m_RendererID);
+		glBindVertexArray(_rendererID);
 		vertexBuffer->Bind();
 
 		uint32_t index = 0;
@@ -79,7 +79,7 @@ namespace DawnStar
 			index++;
 		}
 
-		m_VertexBuffers.push_back(vertexBuffer);
+		_vertexBuffers.push_back(vertexBuffer);
 
 	}
 
@@ -87,9 +87,9 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE();
 
-		glBindVertexArray(m_RendererID);
+		glBindVertexArray(_rendererID);
 		indexBuffer->Bind();
 
-		m_IndexBuffer = indexBuffer;
+		_indexBuffer = indexBuffer;
 	}
 }

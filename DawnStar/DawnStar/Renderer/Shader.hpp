@@ -27,7 +27,7 @@ namespace DawnStar
 		void SetFloat4(const std::string& name, const glm::vec4& value);
 		void SetMat4(const std::string& name, const glm::mat4& value)  ;
 
-		const std::string& GetName() const { return m_Name; }
+		const std::string& GetName() const { return _name; }
 
 		void UploadUniformInt(const std::string& name, int value);
 		void UploadUniformIntArray(const std::string& name, int* values, uint32_t count);
@@ -46,8 +46,8 @@ namespace DawnStar
 		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 
 	private:
-		uint32_t m_RendererID;
-		std::string m_Name;
+		uint32_t _rendererID;
+		std::string _name;
 	};
 
 	class ShaderLibrary
@@ -63,6 +63,6 @@ namespace DawnStar
 		bool Exists(const std::string& name) const;
 
 	private:
-		std::unordered_map<std::string, Ref<Shader>> m_Shaders;
+		std::unordered_map<std::string, Ref<Shader>> _shaders;
 	};
 }

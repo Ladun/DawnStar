@@ -75,7 +75,7 @@ namespace DawnStar
 
 	void ImGuiLayer::OnEvent(Event& e)
 	{
-		if (m_BlockEvents)
+		if (_blockEvents)
 		{
 			ImGuiIO& io = ImGui::GetIO();
 			e.Handled |= e.IsInCategory(EventCategoryMouse) & io.WantCaptureMouse;

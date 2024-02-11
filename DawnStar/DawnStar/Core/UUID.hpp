@@ -10,9 +10,9 @@ namespace DawnStar
 		UUID();
 		UUID(uint64_t uuid);
 
-		operator uint64_t() const { return m_UUID; }
+		operator uint64_t() const { return _UUID; }
 	private:
-		uint64_t m_UUID;
+		uint64_t _UUID;
 	};
 }// namespace DawnStar
 

@@ -13,6 +13,6 @@ namespace DawnStar
 		void Init() ;
 		void SwapBuffer();
 	private:
-		GLFWwindow* m_WindowHandle;
+		GLFWwindow* _windowHandle;
     };
 } // namespace DawnStar

@@ -20,6 +20,6 @@ namespace DawnStar
 			glm::mat4 ViewProjectionMatrix;
 		};
 
-		static SceneData* m_SceneData;
+		static SceneData* _sceneData;
     };
 } // namespace DawnStar

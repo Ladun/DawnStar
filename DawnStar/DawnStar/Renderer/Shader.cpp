@@ -23,6 +23,7 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE()
 
+		DS_CORE_DEBUG("Load shader {0}", filepath);
 		std::string shaderSource = ReadFile(filepath);
 		auto shaderSources = Preprocess(shaderSource);
 		Compile(shaderSources);
@@ -32,11 +33,11 @@ namespace DawnStar
 		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
 		auto lastDot = filepath.rfind('.');
 		auto count = lastDot == std::string::npos ? filepath.size() - lastSlash : lastDot - lastSlash;
-		m_Name = filepath.substr(lastSlash, count);
+		_name = filepath.substr(lastSlash, count);
 	}
 
 	Shader::Shader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
-		: m_Name(name)
+		: _name(name)
 	{
 		DS_PROFILE_SCOPE()
 
@@ -50,7 +51,7 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE()
 		
-		glDeleteProgram(m_RendererID);
+		glDeleteProgram(_rendererID);
 	}
 
 	std::string Shader::ReadFile(const std::string& filepath)
@@ -137,7 +138,7 @@ namespace DawnStar
 
 				glDeleteShader(shader);
 
-				DS_CORE_ERROR("{0}", infoLog.data());
+				DS_CORE_ERROR("[Shader Compile Error] {0}", infoLog.data());
 				DS_CORE_ASSERT(false, "Shader compilation failure!");
 				break;
 			}
@@ -164,13 +165,13 @@ namespace DawnStar
 			glDeleteProgram(program);
 
 
-			DS_CORE_ERROR("{0}", infoLog.data());
+			DS_CORE_ERROR("[Shader Link Error] {0}", infoLog.data());
 			DS_CORE_ASSERT(false, "Shader link failure!");
 
 			return;
 		}
 
-		m_RendererID = program;
+		_rendererID = program;
 
 		for (auto id : glShaderIDs)
 			glDetachShader(program, id);
@@ -180,7 +181,7 @@ namespace DawnStar
 	{
 		DS_PROFILE_SCOPE()
 
-		glUseProgram(m_RendererID);
+		glUseProgram(_rendererID);
 	}
 
 	void Shader::Unbind() const
@@ -241,49 +242,49 @@ namespace DawnStar
 
 	void Shader::UploadUniformInt(const std::string& name, int value)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(_rendererID, name.c_str());
 		glUniform1i(location, value);
 	}
 
 	void Shader::UploadUniformIntArray(const std::string& name, int* values, uint32_t count)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(_rendererID, name.c_str());
 		glUniform1iv(location, count, values);
 	}
 
 	void Shader::UploadUniformFloat(const std::string& name, float value)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(_rendererID, name.c_str());
 		glUniform1f(location, value);
 	}
 
 	void Shader::UploadUniformFloat2(const std::string& name, const glm::vec2& value)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(_rendererID, name.c_str());
 		glUniform2f(location, value.x, value.y);
 	}
 
 	void Shader::UploadUniformFloat3(const std::string& name, const glm::vec3& value)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(_rendererID, name.c_str());
 		glUniform3f(location, value.x, value.y, value.z);
 	}
 
 	void Shader::UploadUniformFloat4(const std::string& name, const glm::vec4& value)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(_rendererID, name.c_str());
 		glUniform4f(location, value.x, value.y, value.z, value.w);
 	}
 
 	void Shader::UploadUniformMat3(const std::string& name, const glm::mat3& matrix)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(_rendererID, name.c_str());
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
 	void Shader::UploadUniformMat4(const std::string& name, const glm::mat4& matrix)
 	{
-		GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+		GLint location = glGetUniformLocation(_rendererID, name.c_str());
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 
 	}
@@ -291,7 +292,7 @@ namespace DawnStar
 	void ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
 	{
 		DS_CORE_ASSERT(!Exists(name), "Shader already exists!");
-		m_Shaders[name] = shader;
+		_shaders[name] = shader;
 	}
 
 	void ShaderLibrary::Add(const Ref<Shader>& shader)
@@ -317,10 +318,10 @@ namespace DawnStar
 	Ref<Shader> ShaderLibrary::Get(const std::string& name)
 	{
 		DS_CORE_ASSERT(Exists(name), "Shader not found!");
-		return m_Shaders[name];
+		return _shaders[name];
 	}
 	bool ShaderLibrary::Exists(const std::string& name) const
 	{
-		return m_Shaders.find(name) != m_Shaders.end();
+		return _shaders.find(name) != _shaders.end();
 	}
 }

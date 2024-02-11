@@ -7,38 +7,38 @@ namespace DawnStar
 	class KeyEvent : public Event
 	{
 	public:
-		inline int GetKeyCode() const { return m_KeyCode; }
+		inline int GetKeyCode() const { return _keyCode; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 	protected:
 		KeyEvent(const int keycode)
-			: m_KeyCode(keycode)
+			: _keyCode(keycode)
 		{
 		}
 
-		int m_KeyCode;
+		int _keyCode;
 	};
 
 	class KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(const int keycode, const uint16_t repeatCount)
-			: KeyEvent(keycode), m_RepeatCount(repeatCount)
+			: KeyEvent(keycode), _repeatCount(repeatCount)
 		{
 		}
 
-		inline uint16_t GetRepeatCount() const { return m_RepeatCount; }
+		inline uint16_t GetRepeatCount() const { return _repeatCount; }
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << m_KeyCode << " (" << m_RepeatCount << " repeats)";
+			ss << "KeyPressedEvent: " << _keyCode << " (" << _repeatCount << " repeats)";
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
 	private:
-		uint16_t m_RepeatCount;
+		uint16_t _repeatCount;
 	};
 
 	class KeyReleasedEvent : public KeyEvent
@@ -52,7 +52,7 @@ namespace DawnStar
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyReleasedEvent: " << m_KeyCode;
+			ss << "KeyReleasedEvent: " << _keyCode;
 			return ss.str();
 		}
 
@@ -70,7 +70,7 @@ namespace DawnStar
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyTypedEvent: " << m_KeyCode;
+			ss << "KeyTypedEvent: " << _keyCode;
 			return ss.str();
 		}
 

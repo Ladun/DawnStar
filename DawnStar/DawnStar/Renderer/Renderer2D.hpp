@@ -1,6 +1,8 @@
 #pragma once
 
 #include <DawnStar/Core/Core.hpp>
+#include <DawnStar/Renderer/Font.hpp>
+#include <DawnStar/Scene/Components.hpp>
 
 #include <glm/glm.hpp>
 
@@ -31,6 +33,15 @@ namespace DawnStar
 
 		static void DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color);
 		static void DrawRect(const glm::mat4& transform, const glm::vec4& color);
+
+		struct TextParams
+		{
+			glm::vec4 Color{ 1.0f };
+			float Kerning = 0.0f;
+			float LineSpacing = 0.0f;
+		};
+		static void DrawString(const std::string& string, Ref<Font> font, const glm::mat4& transform, const TextParams& textParams);
+		static void DrawString(const glm::mat4& transform, const TextComponent& component);
 
 		// Stats
 		struct Statistics

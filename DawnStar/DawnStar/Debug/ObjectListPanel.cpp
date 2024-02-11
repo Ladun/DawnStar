@@ -12,7 +12,7 @@ namespace DawnStar
 
 	ObjectListPanel::ObjectListPanel()
 	{
-		m_Context = {};
+		_context = {};
 	}
 
 	void ObjectListPanel::OnImGuiRender()
@@ -20,11 +20,11 @@ namespace DawnStar
 
 		// Show Object List
 		ImGui::Begin("Entity hierachy");
-		if(m_Context)
+		if(_context)
 		{
-			m_Context->_registry.each([&](auto entityID)
+			_context->_registry.each([&](auto entityID)
 				{
-					Entity entity{ entityID , m_Context.get() };
+					Entity entity{ entityID , _context.get() };
 					if (entity && !entity.GetParent())
 						DrawEntityNode(entity);
 				});
@@ -33,16 +33,16 @@ namespace DawnStar
 		
 
 		ImGui::Begin("Properties");
-		if (m_SelectionEntity)
+		if (_selectionEntity)
 		{
-			DrawComponents(m_SelectionEntity);
+			DrawComponents(_selectionEntity);
 		}
 		ImGui::End();
 	}
 
 	void ObjectListPanel::SetContext(Ref<Scene> &context)
 	{
-		m_Context = context;
+		_context = context;
 	}
 
 	const ImRect ObjectListPanel::DrawEntityNode(Entity entity)
@@ -50,7 +50,7 @@ namespace DawnStar
 		auto& tag = entity.GetComponent<TagComponent>().Tag;
 		const auto& rc = entity.GetRelationship();
 		
-		ImGuiTreeNodeFlags flags = ((m_SelectionEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0);
+		ImGuiTreeNodeFlags flags = ((_selectionEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0);
 		flags |= ImGuiTreeNodeFlags_OpenOnArrow;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 		flags |= ImGuiTreeNodeFlags_FramePadding;		
@@ -62,7 +62,7 @@ namespace DawnStar
 		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, "%s", tag.c_str());
 		if (ImGui::IsItemClicked())
 		{
-			m_SelectionEntity = entity;
+			_selectionEntity = entity;
 		}
 
 		ImVec2 verticalLineStart = ImGui::GetCursorScreenPos();
@@ -80,7 +80,7 @@ namespace DawnStar
 
 			for (const auto& childId : rc.Children)
 			{
-				Entity child = m_Context->GetEntity(childId);
+				Entity child = _context->GetEntity(childId);
 				const float HorizontalTreeLineSize = child.GetRelationship().Children.empty() ? 18.0f : 9.0f; //chosen arbitrarily
 				const ImRect childRect = DrawEntityNode(child);
 

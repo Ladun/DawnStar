@@ -9,36 +9,36 @@ namespace DawnStar
 	{
 	public:
 		MouseMovedEvent(const float x, const float y)
-			: m_MouseX(x), m_MouseY(y)
+			: _mouseX(x), _mouseY(y)
 		{
 		}
 
-		float GetX() const { return m_MouseX; }
-		float GetY() const { return m_MouseY; }
+		float GetX() const { return _mouseX; }
+		float GetY() const { return _mouseY; }
 
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseMovedEvent: " << m_MouseX << ", " << m_MouseY;
+			ss << "MouseMovedEvent: " << _mouseX << ", " << _mouseY;
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(MouseMoved)
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
-		float m_MouseX, m_MouseY;
+		float _mouseX, _mouseY;
 	};
 
 	class MouseScrolledEvent : public Event
 	{
 	public:
 		MouseScrolledEvent(const float xOffset, const float yOffset)
-			: m_XOffset(xOffset), m_YOffset(yOffset)
+			: _xOffset(xOffset), _yOffset(yOffset)
 		{
 		}
 
-		float GetXOffset() const { return m_XOffset; }
-		float GetYOffset() const { return m_YOffset; }
+		float GetXOffset() const { return _xOffset; }
+		float GetYOffset() const { return _yOffset; }
 
 		std::string ToString() const override
 		{
@@ -50,22 +50,22 @@ namespace DawnStar
 		EVENT_CLASS_TYPE(MouseScrolled)
 			EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
-		float m_XOffset, m_YOffset;
+		float _xOffset, _yOffset;
 	};
 
 	class MouseButtonEvent : public Event
 	{
 	public:
-		int GetMouseButton() const { return m_Button; }
+		int GetMouseButton() const { return _button; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
 	protected:
 		MouseButtonEvent(const int button)
-			: m_Button(button)
+			: _button(button)
 		{
 		}
 
-		int m_Button;
+		int _button;
 	};
 
 	class MouseButtonPressedEvent : public MouseButtonEvent
@@ -79,7 +79,7 @@ namespace DawnStar
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseButtonPressedEvent: " << m_Button;
+			ss << "MouseButtonPressedEvent: " << _button;
 			return ss.str();
 		}
 
@@ -97,7 +97,7 @@ namespace DawnStar
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseButtonReleasedEvent: " << m_Button;
+			ss << "MouseButtonReleasedEvent: " << _button;
 			return ss.str();
 		}
 

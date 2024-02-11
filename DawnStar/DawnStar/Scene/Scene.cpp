@@ -5,7 +5,7 @@
 #include <DawnStar/Scene/Entity.hpp>
 
 #include <DawnStar/Renderer/Renderer2D.hpp>
-#include "Scene.hpp"
+#include <DawnStar/Renderer/Font.hpp>
 
 namespace DawnStar
 {
@@ -179,6 +179,15 @@ namespace DawnStar
 					
 				Renderer2D::DrawQuad(Entity(entity, this).GetWorldTransform(), sprite.Texture, sprite.Color, sprite.TilingFactor);
 			}
+			
+			// Draw text
+			{
+				auto view = _registry.view<TextComponent>();
+				for (auto &&[entity, text] : view.each())
+				{
+					Renderer2D::DrawString(Entity(entity, this).GetWorldTransform(), text);
+				}
+			}
 		}
 		Renderer2D::EndScene();
 
@@ -284,6 +293,11 @@ namespace DawnStar
 	{
 	}
 
+	template<>
+	void Scene::OnComponentAdded<TextComponent>(Entity entity, TextComponent& component)
+	{
+	}
+	
 	template<>
 	void Scene::OnComponentAdded<UI::LayoutComponent>(Entity entity, UI::LayoutComponent& component)
 	{

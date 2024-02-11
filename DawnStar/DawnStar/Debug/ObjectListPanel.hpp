@@ -24,7 +24,7 @@ namespace DawnStar
         void DrawComponents(Entity entity);
 
     private:
-        Ref<Scene> m_Context;
-        Entity m_SelectionEntity;
+        Ref<Scene> _context;
+        Entity _selectionEntity;
     };    
 }

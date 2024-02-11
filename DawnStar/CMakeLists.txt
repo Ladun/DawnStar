@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.15)
  
 set(PROJECT_NAME DawnStar)
  
@@ -19,8 +19,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glfw)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/glad)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/stb_image)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/optick)
-
-find_package(Freetype REQUIRED)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/msdf-atlas-gen)
 
 # make exe file
 add_library(${PROJECT_NAME} STATIC 
@@ -29,14 +28,13 @@ add_library(${PROJECT_NAME} STATIC
 target_include_directories(${PROJECT_NAME} PUBLIC 
                            ${CMAKE_CURRENT_SOURCE_DIR}
                            ${CMAKE_CURRENT_SOURCE_DIR}/third-party
-                           ${CMAKE_CURRENT_SOURCE_DIR}/third-party/entt/include
-                           ${FREETYPE_INCLUDE_DIRS})
+                           ${CMAKE_CURRENT_SOURCE_DIR}/third-party/entt/include)
 
 # Linking
 target_link_libraries(${PROJECT_NAME}
                       spdlog glm glfw
                       glad stb_image imgui
-                      OptickCore ${FREETYPE_LIBRARIES})
+                      OptickCore msdf-atlas-gen)
 
 if(COMMAND target_precompile_headers)
     target_precompile_headers(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/DawnStar/dspch.hpp)

@@ -10,7 +10,7 @@ namespace DawnStar
 
 	LayerStack::~LayerStack()
 	{	
-		for (Layer* layer : m_Layers)
+		for (Layer* layer : _layers)
 		{
 			layer->OnDetach();
 			delete layer;
@@ -18,33 +18,33 @@ namespace DawnStar
 	}
     void LayerStack::PushLayer(Layer* layer)
 	{
-		m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
-		m_LayerInsertIndex++;
+		_layers.emplace(_layers.begin() + _layerInsertIndex, layer);
+		_layerInsertIndex++;
 	}
 
 	void LayerStack::PushOverlay(Layer* overlay)
 	{
-		m_Layers.emplace_back(overlay);
+		_layers.emplace_back(overlay);
 	}
 
 	void LayerStack::PopLayer(Layer* layer)
 	{
 		// TODO: free memory that layer used;
-		auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
-		if (it != m_Layers.end())
+		auto it = std::find(_layers.begin(), _layers.end(), layer);
+		if (it != _layers.end())
 		{
 			layer->OnDetach();
-			m_Layers.erase(it);
-			m_LayerInsertIndex--;
+			_layers.erase(it);
+			_layerInsertIndex--;
 		}
 	}
 	void LayerStack::PopOverlay(Layer* overlay)
 	{
-		auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
-		if (it != m_Layers.end())
+		auto it = std::find(_layers.begin(), _layers.end(), overlay);
+		if (it != _layers.end())
 		{
 			overlay->OnDetach();
-			m_Layers.erase(it);
+			_layers.erase(it);
 		}
 	}
 } // namespace DawnStar

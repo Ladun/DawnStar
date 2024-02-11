@@ -10,12 +10,12 @@ namespace DawnStar
 	static std::uniform_int_distribution<uint64_t> s_UniformDistribution;
 
 	UUID::UUID()
-		: m_UUID(s_UniformDistribution(s_Engine))
+		: _UUID(s_UniformDistribution(s_Engine))
 	{
 	}
 
 	UUID::UUID(uint64_t uuid)
-		: m_UUID(uuid)
+		: _UUID(uuid)
 	{
 	}
 }

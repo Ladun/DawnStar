@@ -8,6 +8,7 @@
 
 #include <DawnStar/Renderer/Texture.hpp>
 #include <DawnStar/Renderer/Camera.hpp>
+#include <DawnStar/Renderer/Font.hpp>
 
 namespace DawnStar
 {
@@ -72,6 +73,15 @@ namespace DawnStar
 	struct PrefabComponent
 	{
 		UUID ID;
+	};
+	
+	struct TextComponent // TODO: add align, ...
+	{
+		std::string TextString;
+		Ref<Font> FontAsset = Font::GetDefault();
+		glm::vec4 Color{ 1.0f };
+		float Kerning = 0.0f;
+		float LineSpacing = 0.0f;
 	};
 
 	// UI Component

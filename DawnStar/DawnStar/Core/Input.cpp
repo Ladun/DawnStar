@@ -10,41 +10,41 @@
 
 namespace DawnStar
 {
-    InputState Input::m_KeyState;
-    InputState Input::m_MouseState;
+    InputState Input::_keyState;
+    InputState Input::_mouseState;
     
     bool Input::IsKey(const KeyCode key)
     {
         DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
 
-        return m_KeyState.GetCurrentState(key);
+        return _keyState.GetCurrentState(key);
     }
     bool Input::IsKeyDown(const KeyCode key)
     {
         DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
-        return !m_KeyState.GetLastState(key) && m_KeyState.GetCurrentState(key);
+        return !_keyState.GetLastState(key) && _keyState.GetCurrentState(key);
     }
     bool Input::IsKeyUp(const KeyCode key)
     {
         DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
-        return m_KeyState.GetLastState(key) && !m_KeyState.GetCurrentState(key);
+        return _keyState.GetLastState(key) && !_keyState.GetCurrentState(key);
     }
         
     bool Input::IsMouseButton(MouseCode button)
     {
         DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
-        return m_KeyState.GetCurrentState(button);
+        return _keyState.GetCurrentState(button);
     }
     bool Input::IsMouseButtonDown(MouseCode button)
     {
         DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
-        return !m_MouseState.GetLastState(button) && m_MouseState.GetCurrentState(button);
+        return !_mouseState.GetLastState(button) && _mouseState.GetCurrentState(button);
     }
 
     bool Input::IsMouseButtonUp(MouseCode button)
     {
         DS_PROFILE_CATEGORY("Input", Profile::Category::Input);
-        return m_MouseState.GetLastState(button) && !m_MouseState.GetCurrentState(button);
+        return _mouseState.GetLastState(button) && !_mouseState.GetCurrentState(button);
     }
 
     glm::vec2 Input::GetMousePosition()
@@ -67,26 +67,26 @@ namespace DawnStar
 
     void Input::OnUpdate()
     {        
-        for(auto p : m_KeyState.m_CurrentState)
+        for(auto p : _keyState._currentState)
         {
-            m_KeyState.m_LastState[p.first] = p.second;
+            _keyState._lastState[p.first] = p.second;
         }
-        for(auto p : m_MouseState.m_CurrentState)
+        for(auto p : _mouseState._currentState)
         {
-            m_MouseState.m_LastState[p.first] = p.second;
+            _mouseState._lastState[p.first] = p.second;
         }
     }
 
     void Input::SetUpKey(KeyCode key, bool pressed)
     {
-        m_KeyState.SetCurrentState(key, pressed);
-        m_KeyState.SetCurrentState(Key::Any, pressed);
+        _keyState.SetCurrentState(key, pressed);
+        _keyState.SetCurrentState(Key::Any, pressed);
     }
 
     void Input::SetUpMouse(MouseCode key, bool pressed)
     {
-        m_MouseState.SetCurrentState(key, pressed);
-        m_MouseState.SetCurrentState(Mouse::Any, pressed);
+        _mouseState.SetCurrentState(key, pressed);
+        _mouseState.SetCurrentState(Mouse::Any, pressed);
     }
 } // namespace DawnStar
 
