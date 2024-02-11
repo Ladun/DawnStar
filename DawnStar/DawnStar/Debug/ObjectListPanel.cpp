@@ -5,7 +5,10 @@
 #include <imgui/imgui_internal.h>
 #include <imgui/misc/cpp/imgui_stdlib.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <filesystem>
+#include <cstring>
 
 namespace DawnStar
 {
@@ -190,6 +193,14 @@ namespace DawnStar
 			ImGui::ImageButton(reinterpret_cast<ImTextureID>(id), { buttonSize, buttonSize }, { 1, 1 }, { 0, 0 }, 0);
 
 			ImGui::DragFloat("Tiling Factor", &component.TilingFactor, 0.1f, 0.0f, 100.0f);
+		});
+
+		DrawComponent<TextComponent>("Text", entity, [](auto& component)
+		{
+			ImGui::InputTextMultiline("Text", &component.TextString);
+			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));	
+			ImGui::DragFloat("Kerning", &component.Kerning, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("LineSpacing", &component.LineSpacing, 0.1f, 0.0f, 100.0f);
 		});
 		
 
