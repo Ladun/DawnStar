@@ -5,6 +5,8 @@
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <DawnStar/Game/UI/UISystem.hpp>
+
 
 namespace BasicExample
 {
@@ -16,24 +18,28 @@ namespace BasicExample
 
 	void ExampleLayer::OnAttach()
 	{
-		_scene = DawnStar::CreateRef<DawnStar::Scene>();
-		_scene->OnViewportResize(DawnStar::Application::Get().GetWindow().GetWidth(),
-								DawnStar::Application::Get().GetWindow().GetHeight());
+		_scene = CreateRef<Scene>();
+		_scene->OnViewportResize(Application::Get().GetWindow().GetWidth(),
+								Application::Get().GetWindow().GetHeight());
 		_listPanel.SetContext(_scene);
 
-		_scene->AddSystem(DawnStar::CreateRef<TestSystem>(_scene));
+		_scene->AddSystem(CreateRef<TestSystem>(_scene));
 		{ // Camera
-			DawnStar::Entity mainCam = _scene->CreateEntity("Main Camera");
-			mainCam.AddComponent<DawnStar::CameraComponent>();        
+			Entity mainCam = _scene->CreateEntity("Main Camera");
+			mainCam.AddComponent<CameraComponent>();      
+
+			auto& transform = mainCam.GetTransform();
+			transform.Translation.z = 10.0f;  
 		}
 		{
 			_testEntity = _scene->CreateEntity("Test object");
 			// Texture setting
-			auto& sprite = _testEntity.AddComponent<DawnStar::SpriteRendererComponent>();
+			auto& sprite = _testEntity.AddComponent<SpriteRendererComponent>();
 			sprite.Color = {0.7f, 0.5f, 0.3f, 1.0f};
 
-			auto& text = _testEntity.AddComponent<DawnStar::TextComponent>();
+			auto& text = _testEntity.AddComponent<TextComponent>();
 			text.TextString = "Hello";
+			text.FontAsset = CreateRef<Font>("assets/fonts/godoRounded-L.ttf");
 			text.Color = glm::vec4(1.0f);
 		}
 
@@ -44,7 +50,7 @@ namespace BasicExample
 		
 	}
 
-	void ExampleLayer::OnUpdate(DawnStar::Timestep ts)
+	void ExampleLayer::OnUpdate(Timestep ts)
 	{
 
 		auto camEntity = _scene->GetPrimaryCameraEntity();
@@ -52,16 +58,16 @@ namespace BasicExample
 		{
 			auto& transform = camEntity.GetTransform();
 			
-			if (DawnStar::Input::IsKey(DawnStar::Key::W))
+			if (Input::IsKey(Key::W))
 				transform.Translation.z -= ts * 2;
-			if (DawnStar::Input::IsKey(DawnStar::Key::S))
+			if (Input::IsKey(Key::S))
 				transform.Translation.z += ts * 2;
 		}
 		
 		// Update and Rendering scene
-		DawnStar::Renderer2D::ResetStats();
-		DawnStar::RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
-		DawnStar::RenderCommand::Clear();
+		Renderer2D::ResetStats();
+		RenderCommand::SetClearColor({0.1f, 0.1f, 0.1f, 1.0f});
+		RenderCommand::Clear();
 
 		_scene->OnUpdate(ts);
 	}
@@ -70,23 +76,9 @@ namespace BasicExample
 	{
 		_statPanel.OnImGuiRender();
 		_listPanel.OnImGuiRender();
-			
-
-		ImGui::Begin("Camera Setting");
-		{
-			auto camEntity = _scene->GetPrimaryCameraEntity();
-			if(camEntity)
-			{
-				auto& transform = camEntity.GetTransform();
-				DawnStar::ImGuiUI::DrawVec3Control("Translation", transform.Translation);
-				DawnStar::ImGuiUI::DrawVec3Control("Rotation", transform.Rotation);
-				DawnStar::ImGuiUI::DrawVec3Control("Scale", transform.Scale);
-			}
-		}
-		ImGui::End();
 	}
 
-	void ExampleLayer::OnEvent(DawnStar::Event& e)
+	void ExampleLayer::OnEvent(Event& e)
 	{
 	}
 }

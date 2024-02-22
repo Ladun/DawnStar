@@ -39,6 +39,8 @@ namespace DawnStar
 			glm::vec4 Color{ 1.0f };
 			float Kerning = 0.0f;
 			float LineSpacing = 0.0f;
+			float FontSize = 1.0f;
+			uint8_t Align;
 		};
 		static void DrawString(const std::string& string, Ref<Font> font, const glm::mat4& transform, const TextParams& textParams);
 		static void DrawString(const glm::mat4& transform, const TextComponent& component);

@@ -166,23 +166,26 @@ namespace DawnStar
     {
 		DS_PROFILE_CATEGORY("Rendering", Profile::Category::Rendering);
 
+		// TODO: 렌더링을 조금 비효율적으로 하는 거 같음. UI부분과 World 부분의 rendering 코드 수정 현재는 너무 중복된 느낌
 		// Rendering 2D components
 		Renderer2D::BeginScene(cameraData.ViewProjection);
 		{
 			DS_PROFILE_SCOPE("Submit 2D Data");
 
-			const auto view = _registry.view<SpriteRendererComponent>();
-			for (auto &&[entity, sprite] : view.each())
 			{
-				if(sprite.Enable == false)
-					continue;
-					
-				Renderer2D::DrawQuad(Entity(entity, this).GetWorldTransform(), sprite.Texture, sprite.Color, sprite.TilingFactor);
+				const auto view = _registry.view<SpriteRendererComponent>();
+				for (auto &&[entity, sprite] : view.each())
+				{
+					if(sprite.Enable == false)
+						continue;
+						
+					Renderer2D::DrawQuad(Entity(entity, this).GetWorldTransform(), sprite.Texture, sprite.Color, sprite.TilingFactor);
+				}
 			}
 			
 			// Draw text
 			{
-				auto view = _registry.view<TextComponent>();
+				const auto view = _registry.view<TextComponent>(entt::exclude<UI::LayoutComponent>);
 				for (auto &&[entity, text] : view.each())
 				{
 					Renderer2D::DrawString(Entity(entity, this).GetWorldTransform(), text);
@@ -196,24 +199,34 @@ namespace DawnStar
 		{
 			DS_PROFILE_SCOPE("Submit UI Data");
 
-			const auto view = _registry.view<UI::SpriteRendererComponent, UI::LayoutComponent>();
-			for (auto &&[entity, sprite, layout] : view.each())
 			{
-				if(sprite.Enable == false)
-					continue;
+				const auto view = _registry.view<UI::SpriteRendererComponent, UI::LayoutComponent>();
+				for (auto &&[entity, sprite, layout] : view.each())
+				{
+					if(sprite.Enable == false)
+						continue;
+					
+					if(layout.Enable == false)
+						continue;			
 
-				const auto& transform = Entity(entity, this).GetTransform();
-				// Calcuate pivot based rotation transform matrix
-				// mat = Translation * Rotation * PivotTranslation * Scale
-				glm::mat4 mat = glm::translate(glm::mat4(1.0f), transform.Translation) * 
-								glm::toMat4(glm::quat(transform.Rotation)) * 
-								glm::translate(glm::mat4(1.0f), glm::vec3((0.5f - layout.Pivot.x) * transform.Scale.x,
-                                                                          (0.5f - layout.Pivot.y) * transform.Scale.y, 0.0f)) * 
-								glm::scale(glm::mat4(1.0f), transform.Scale);				
-
-				Renderer2D::DrawQuad(mat, sprite.Texture, sprite.Color, sprite.TilingFactor);
+					Renderer2D::DrawQuad(Entity(entity, this).GetUIWorldTransform() * glm::scale(glm::mat4(1.0f), glm::vec3(layout._size, 1.0f)), 
+										 sprite.Texture, sprite.Color, sprite.TilingFactor);
+				}
 			}
+			{
+				const auto view = _registry.view<TextComponent, UI::LayoutComponent>();
+				for (auto &&[entity, text, layout] : view.each())
+				{
+					if(text.Enable == false)
+						continue;
+					
+					if(layout.Enable == false)
+						continue;		
 
+					// Text rendering does not require size (including width and height) scaling.
+					Renderer2D::DrawString(Entity(entity, this).GetUIWorldTransform(), text);
+				}
+			}
 		}
 		Renderer2D::EndScene();
     }
@@ -238,15 +251,15 @@ namespace DawnStar
 		float heightF = static_cast<float>(height);
 		float aspectRatio = static_cast<float>(width) / heightF;
 		// (0, 0) center
-		// const float orthoLeft = -heightF * aspectRatio * 0.5f;
-		// const float orthoRight = heightF * aspectRatio * 0.5f;
-		// const float orthoBottom = -heightF * 0.5f;
-		// const float orthoTop = heightF * 0.5f;
+		const float orthoLeft = -heightF * aspectRatio * 0.5f;
+		const float orthoRight = heightF * aspectRatio * 0.5f;
+		const float orthoBottom = -heightF * 0.5f;
+		const float orthoTop = heightF * 0.5f;
 		// (0, 0) left-bottom
-		const float orthoLeft = 0;
-		const float orthoRight = heightF * aspectRatio;
-		const float orthoBottom = 0;
-		const float orthoTop = heightF;
+		// const float orthoLeft = 0;
+		// const float orthoRight = heightF * aspectRatio;
+		// const float orthoBottom = 0;
+		// const float orthoTop = heightF;
 
 		_uiProjection = glm::ortho(orthoLeft, orthoRight, orthoBottom, orthoTop,
 									-1.0f, 1.0f);
@@ -306,15 +319,22 @@ namespace DawnStar
 	template<>
 	void Scene::OnComponentAdded<UI::SpriteRendererComponent>(Entity entity, UI::SpriteRendererComponent& component)
 	{
-		DS_CORE_ASSERT(entity.HasComponent<UI::LayoutComponent>(), "Don't have layout component");
+		DS_CORE_ASSERT(entity.HasComponent<UI::LayoutComponent>(), "Doesn't have layout component");
 	}
-
+	
 	template<>
 	void Scene::OnComponentAdded<UI::ButtonComponent>(Entity entity, UI::ButtonComponent& component)
 	{
-		DS_CORE_ASSERT(entity.HasComponent<UI::SpriteRendererComponent>(), "Don't have sprite renderer component");
+		DS_CORE_ASSERT(entity.HasComponent<UI::SpriteRendererComponent>(), "Doesn't have sprite renderer component");
 
-		auto& sprite = entity.GetComponent<UI::SpriteRendererComponent>();
-		sprite.Interactable = true;
+		auto& layout = entity.GetComponent<UI::LayoutComponent>();
+		layout.Interactable = true;
+	}
+
+	template<>
+	void Scene::OnComponentAdded<UI::InputTextComponent>(Entity entity, UI::InputTextComponent& component)
+	{
+		DS_CORE_ASSERT(entity.HasComponent<TextComponent>(), "Doesn't have TextComponent");
+
 	}
 }

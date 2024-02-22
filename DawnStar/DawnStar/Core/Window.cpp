@@ -83,6 +83,8 @@ namespace DawnStar
 		glfwSetKeyCallback(_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				
+				Input::SetUpKey(key, action!=GLFW_RELEASE);
 
 				switch (action)
 				{
@@ -105,12 +107,13 @@ namespace DawnStar
 						break;
 					}
 				}
-				Input::SetUpKey(key, action!=GLFW_RELEASE);
 			});
 
 		glfwSetCharCallback(_window, [](GLFWwindow* window, unsigned int keycode)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				Input::SetKeyCode(keycode);
 
 				KeyTypedEvent event(keycode);
 				data.EventCallback(event);
@@ -119,6 +122,8 @@ namespace DawnStar
 		glfwSetMouseButtonCallback(_window, [](GLFWwindow* window, int button, int action, int mods)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				Input::SetUpMouse(button, action==GLFW_PRESS);
 
 				switch (action)
 				{
@@ -135,7 +140,6 @@ namespace DawnStar
 					break;
 				}
 				}
-				Input::SetUpMouse(button, action==GLFW_PRESS);
 			});
 
 		glfwSetScrollCallback(_window, [](GLFWwindow* window, double xOffset, double yOffset)
@@ -144,6 +148,7 @@ namespace DawnStar
 
 				MouseScrolledEvent event((float)xOffset, (float)yOffset);
 				data.EventCallback(event);
+
 			});
 
 		glfwSetCursorPosCallback(_window, [](GLFWwindow* window, double xPos, double yPos)

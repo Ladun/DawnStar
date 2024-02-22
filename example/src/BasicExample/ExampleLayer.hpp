@@ -5,10 +5,12 @@
 #include <DawnStar/Debug/ObjectListPanel.hpp>
 
 
+using namespace DawnStar;
+
 namespace BasicExample
 {
 
-	class ExampleLayer : public DawnStar::Layer
+	class ExampleLayer : public Layer
 	{
 	public:
 		ExampleLayer();
@@ -17,16 +19,16 @@ namespace BasicExample
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 
-		void OnUpdate(DawnStar::Timestep ts) override;
+		void OnUpdate(Timestep ts) override;
 		virtual void OnImGuiRender() override;
-		void OnEvent(DawnStar::Event& e) override;
+		void OnEvent(Event& e) override;
 
 	private:
-		DawnStar::RenderStatPanel _statPanel;
-		DawnStar::ObjectListPanel _listPanel;
+		RenderStatPanel _statPanel;
+		ObjectListPanel _listPanel;
 
-		DawnStar::Ref<DawnStar::Scene> _scene;
+		Ref<Scene> _scene;
 
-		DawnStar::Entity _testEntity;
+		Entity _testEntity;
 	};
 }

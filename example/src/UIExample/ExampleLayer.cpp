@@ -5,47 +5,56 @@
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 
-template<>
-void DawnStar::Scene::OnComponentAdded<UIExample::CustomComponent>(DawnStar::Entity entity, UIExample::CustomComponent& component)
-{
-
-}
+#include <DawnStar/Game/UI/UISystem.hpp>
+#include <DawnStar/Game/UI/UIContents.hpp>
 
 namespace UIExample
 {
 
 	ExampleLayer::ExampleLayer()
-		: m_StatPanel()
+		: _statPanel(), _listPanel()
 	{
 
 	}
 
 	void ExampleLayer::OnAttach()
 	{
-		m_Scene = DawnStar::CreateRef<DawnStar::Scene>();
-		m_Scene->OnViewportResize(DawnStar::Application::Get().GetWindow().GetWidth(),
-								  DawnStar::Application::Get().GetWindow().GetHeight());
+		_scene = CreateRef<Scene>();
+		_listPanel.SetContext(_scene);
+		_scene->OnViewportResize(Application::Get().GetWindow().GetWidth(),
+								  Application::Get().GetWindow().GetHeight());
 
-		//m_Scene->AddSystem();
+		_scene->AddSystem(CreateRef<UI::UISystem>(_scene));
 		{ // Camera
-			DawnStar::Entity mainCam = m_Scene->CreateEntity("Main Camera");
-			mainCam.AddComponent<DawnStar::CameraComponent>();        
+			Entity mainCam = _scene->CreateEntity("Main Camera");
+			mainCam.AddComponent<CameraComponent>();  
+
+			auto& transform = mainCam.GetTransform();
+			transform.Translation.z = 10.0f;        
 		}
-		{
-			m_TestEntity = m_Scene->CreateEntity("Test object");
+		// { // None UI object
+		// 	_testEntity = _scene->CreateEntity("Test object");
+		// 	// Texture setting
+		// 	auto& sprite = _testEntity.AddComponent<SpriteRendererComponent>();
+		// 	sprite.Color = {0.7f, 0.5f, 0.3f, 1.0f};
+		// }
+		// { // Button
+		// 	auto entity = _scene->CreateEntity("Connect Button");
+		// 	auto& layout = entity.AddComponent<UI::LayoutComponent>();
+		// 	layout.AnchorMax = layout.AnchorMin = {0.5, 0.5};
+		// 	layout.Pivot = {0.5, 0.5};
+		// 	layout.Box = {0, 0, 80, 40};
+			
+		// 	auto& sprite = entity.AddComponent<UI::SpriteRendererComponent>();
+		// 	sprite.SortingOrder = 8;
 
-			// Texture setting
-			auto& sprite = m_TestEntity.AddComponent<DawnStar::UI::SpriteRendererComponent>();
-			sprite.Color = {0.7f, 0.5f, 0.3f, 1.0f};
-		}
-		{
-			m_TestEntity2 = m_Scene->CreateEntity("Test object2");
-
-			// Texture setting
-			auto& sprite = m_TestEntity2.AddComponent<DawnStar::SpriteRendererComponent>();
-			sprite.Color = {0.7f, 1.0f, 0.3f, 1.0f};
-
-			m_TestEntity2.AddComponent<CustomComponent>();
+		// 	auto& button = entity.AddComponent<UI::ButtonComponent>();
+		// 	button.normalColor  = {0.3f, 0.8f, 0.3f, 0.5f};
+		// 	button.overColor    = {0.3f, 0.8f, 0.3f, 0.7f};
+		// 	button.pressColor   = {0.3f, 0.8f, 0.3f, 0.3f};
+		// }
+		{ // Input Box
+			auto entity = DawnStar::UI::CreateInputText(_scene);
 		}
 
 
@@ -56,51 +65,24 @@ namespace UIExample
 		
 	}
 
-	void ExampleLayer::OnUpdate(DawnStar::Timestep ts)
+	void ExampleLayer::OnUpdate(Timestep ts)
 	{
 		
 		// Update and Rendering scene
-		DawnStar::Renderer2D::ResetStats();
-		DawnStar::RenderCommand::SetClearColor({0.0f, 0.0f, 0.0f, 1.0f});
-		DawnStar::RenderCommand::Clear();
+		Renderer2D::ResetStats();
+		RenderCommand::SetClearColor({0.0f, 0.0f, 0.0f, 1.0f});
+		RenderCommand::Clear();
 
-		m_Scene->OnUpdate(ts);
+		_scene->OnUpdate(ts);
 	}
 
 	void ExampleLayer::OnImGuiRender()
 	{
-		m_StatPanel.OnImGuiRender();
-
-		ImGui::Begin("Object Setting");
-		{
-			{
-				auto& transform = m_TestEntity.GetTransform();
-				DawnStar::ImGuiUI::DrawVec3Control("Translation", transform.Translation);
-				DawnStar::ImGuiUI::DrawVec3Control("Rotation", transform.Rotation);
-				DawnStar::ImGuiUI::DrawVec3Control("Scale", transform.Scale);
-				auto& sprite = m_TestEntity.GetComponent<DawnStar::UI::SpriteRendererComponent>();
-				ImGui::ColorEdit4("Color", glm::value_ptr(sprite.Color));	
-			}	
-		}
-		ImGui::End();
-
-			
-
-		ImGui::Begin("Camera Setting");
-		{
-			auto camEntity = m_Scene->GetPrimaryCameraEntity();
-			if(camEntity)
-			{
-				auto& transform = camEntity.GetTransform();
-				DawnStar::ImGuiUI::DrawVec3Control("Translation", transform.Translation);
-				DawnStar::ImGuiUI::DrawVec3Control("Rotation", transform.Rotation);
-				DawnStar::ImGuiUI::DrawVec3Control("Scale", transform.Scale);
-			}
-		}
-		ImGui::End();
+		_statPanel.OnImGuiRender();
+		_listPanel.OnImGuiRender();
 	}
 
-	void ExampleLayer::OnEvent(DawnStar::Event& e)
+	void ExampleLayer::OnEvent(Event& e)
 	{
 	}
 }

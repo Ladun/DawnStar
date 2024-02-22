@@ -75,13 +75,42 @@ namespace DawnStar
 		UUID ID;
 	};
 	
-	struct TextComponent // TODO: add align, ...
+	struct TextComponent : public BaseComponent
 	{
 		std::string TextString;
 		Ref<Font> FontAsset = Font::GetDefault();
 		glm::vec4 Color{ 1.0f };
 		float Kerning = 0.0f;
 		float LineSpacing = 0.0f;
+		float FontSize = 1.0f;
+
+		// 0000 0000
+		// [][] [bottom][centor][top] [right][centor][left]
+		uint8_t Align = 0b0000'1001; 
+		void SetHorizontalLeft()
+		{	
+			Align = (Align & 0b0011'1000) | 0b0000'0001; 
+		}
+		void SetHorizontalCenter()
+		{	
+			Align = (Align & 0b0011'1000) | 0b0000'0010; 
+		}
+		void SetHorizontalRight()
+		{	
+			Align = (Align & 0b0011'1000) | 0b0000'0100; 
+		}
+		void SetVerticalTop()
+		{	
+			Align = (Align & 0b0000'0111) | 0b0000'1000; 
+		}
+		void SetVerticalCenter()
+		{	
+			Align = (Align & 0b0000'0111) | 0b0001'0000; 
+		}
+		void SetVerticalBottom()
+		{	
+			Align = (Align & 0b0000'0111) | 0b0010'0000; 
+		}
 	};
 
 	// UI Component
@@ -90,13 +119,28 @@ namespace DawnStar
 		// RequireComponents [TransformComponent]
 		struct LayoutComponent : public BaseComponent
 		{
+			friend class UISystem;
+
 			glm::vec2 AnchorMin{0.0f, 0.0f};  // Anchor's minimum point normalized to parent size (0 to 1)
 			glm::vec2 AnchorMax{1.0f, 1.0f};  // Anchor's maximum point normalized to parent size (0 to 1)
 			glm::vec2 Pivot{0.5, 0.5};      // Pivot point normalized to the rectangle's size (0 to 1)
 
-			glm::vec4 Box; //( x, y, w, h) or (l, t, r, b)
+			// (x, y, w, h) or (l, t, r, b)
+			// (x, t, w, b) or (l, y, r, h)
+			// 1th and 3th element are related to x-axis
+			// 2th and 4th element are related to y-axis
+			glm::vec4 Box; 
 			float Rotation = 0.0f;
+			glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
+			bool Interactable = false;
 
+			// Controlled by UI System
+			glm::vec2 _size;
+		};
+
+		struct InputTextComponent : public BaseComponent
+		{
+			
 		};
 
 		struct SpriteRendererComponent : public BaseComponent
@@ -105,8 +149,6 @@ namespace DawnStar
 			Ref<Texture2D> Texture = nullptr;
 			int32_t SortingOrder = 0;
 			float TilingFactor = 1.0f;
-
-			bool Interactable = false;
 		};
 
 		struct ButtonComponent : public BaseComponent

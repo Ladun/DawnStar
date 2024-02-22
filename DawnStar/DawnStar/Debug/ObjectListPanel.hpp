@@ -14,14 +14,14 @@ namespace DawnStar
         ObjectListPanel();
         ~ObjectListPanel() = default;
 
-        void OnImGuiRender();
+        void    OnImGuiRender();
 
-        void SetContext(Ref<Scene>& context);
+        void    SetContext(Ref<Scene>& context);
 
     private:
-        const ImRect DrawEntityNode(Entity entity);
+        const   ImRect DrawEntityNode(Entity entity);
 
-        void DrawComponents(Entity entity);
+        void    DrawComponents(Entity entity);
 
     private:
         Ref<Scene> _context;

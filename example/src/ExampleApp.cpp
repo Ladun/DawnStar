@@ -12,8 +12,8 @@ public:
 	Sandbox()
 			: Application("Test", 800, 600)
 	{
-		PushLayer(new BasicExample::ExampleLayer());
-		// PushLayer(new UIExample::ExampleLayer());
+		// PushLayer(new BasicExample::ExampleLayer());
+		PushLayer(new UIExample::ExampleLayer());
 	}
 	~Sandbox()
 	{

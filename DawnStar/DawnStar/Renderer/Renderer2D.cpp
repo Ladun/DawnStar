@@ -395,16 +395,81 @@ namespace DawnStar
 		
 		const auto& fontGeometry = font->GetMSDFData()->FontGeometry;
 		const auto& metrics = fontGeometry.getMetrics();
-		Ref<Texture2D> fontAtlas = 	font->GetAtlasTexture();
-
 		s_Data.FontAtlasTexture = font->GetAtlasTexture();
 
-		double x = 1.0;
-		double fsScale = 1.0 / (metrics.ascenderY - metrics.descenderY);
-		double y = 0.0;
+		double fsScale = 1.0 / (metrics.ascenderY - metrics.descenderY) * textParams.FontSize;
+		double x = 0.0;
+		double y = -fsScale * metrics.lineHeight / 2;
 
 		const float spaceGlyphsAdvance = fontGeometry.getGlyph(' ')->getAdvance();
 
+		// Calcuate full width and height	
+		#pragma region Calculate the full width and height of Text	
+		std::vector<double> widthOfEachColumn; 
+		double width = 0;
+		double height = 0;
+		for(size_t i = 0; i < string.size(); i++)
+		{
+			char character = string[i];
+			if(character == '\r')
+				continue;
+
+			if (character == '\n')
+			{
+				widthOfEachColumn.push_back(x);
+				x = 0;
+				y -= fsScale * metrics.lineHeight + textParams.LineSpacing;
+				continue;
+			}
+
+			if (character == ' ')
+			{
+				float advance = spaceGlyphsAdvance;
+				if (i < string.size() - 1)
+				{
+					char nextCharacter = string[i + 1];
+					double dAdvance;
+					fontGeometry.getAdvance(dAdvance, character, nextCharacter);
+					advance = (float)dAdvance;
+				}
+
+				x += fsScale * advance + textParams.Kerning;
+			}
+			else if (character == '\t')
+			{
+				x += 4.0f * (fsScale * spaceGlyphsAdvance + textParams.Kerning);
+				continue;
+			}
+			else 
+			{
+				auto glyph = fontGeometry.getGlyph(character);
+				if (!glyph)
+					glyph = fontGeometry.getGlyph('?');
+				if (!glyph)
+					return;
+
+				double advance = glyph->getAdvance();
+				if (i < string.size() - 1)
+				{
+					char nextCharacter = string[i + 1];
+					fontGeometry.getAdvance(advance, character, nextCharacter);
+				}
+
+				x += fsScale * advance + textParams.Kerning;
+			}
+			if (x > width)
+				width = x;
+		}
+		widthOfEachColumn.push_back(x);
+		height = -y;
+
+		#pragma endregion
+
+		#pragma region Drawing text
+		// Drawing text
+		x = 0.0;
+		y = -fsScale * metrics.lineHeight / 2;
+		int lineIdx = 0;
 		for(size_t i = 0; i < string.size(); i++)
 		{
 			char character = string[i];
@@ -415,6 +480,7 @@ namespace DawnStar
 			{
 				x = 0;
 				y -= fsScale * metrics.lineHeight + textParams.LineSpacing;
+				lineIdx++;
 				continue;
 			}
 
@@ -455,32 +521,54 @@ namespace DawnStar
 			glm::vec2 quadMin((float)pl, (float)pb);
 			glm::vec2 quadMax((float)pr, (float)pt);
 
-			quadMin *= fsScale, quadMax *= fsScale;
-			quadMin += glm::vec2(x, y);
-			quadMax += glm::vec2(x, y);
+			// Calucate 
+			glm::vec2 adjustment = glm::vec2(0);
 
-			float texelWidth = 1.0f / fontAtlas->GetWidth();
-			float texelHeight = 1.0f / fontAtlas->GetHeight();
+			// horizontal alignment
+			if(textParams.Align & 0b0000'0010) // center
+			{
+				adjustment.x = -(width - widthOfEachColumn[lineIdx]) / 2;
+			}
+			else if(textParams.Align & 0b0000'0100) // right
+			{
+				adjustment.x = -(width - widthOfEachColumn[lineIdx]);
+			}
+			// vertical alignment
+			if(textParams.Align & 0b0001'0000) // center
+			{
+				adjustment.y = height / 2;
+			}
+			else if(textParams.Align & 0b0010'0000) // bottom
+			{
+				adjustment.y = height;
+			}
+			
+			quadMin *= fsScale, quadMax *= fsScale;
+			quadMin += glm::vec2(x, y) + adjustment;
+			quadMax += glm::vec2(x, y) + adjustment;
+
+			float texelWidth = 1.0f / s_Data.FontAtlasTexture->GetWidth();
+			float texelHeight = 1.0f / s_Data.FontAtlasTexture->GetHeight();
 			texCoordMin *= glm::vec2(texelWidth, texelHeight);
 			texCoordMax *= glm::vec2(texelWidth, texelHeight);
 
 			// render here
-			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin, 0.0f, 1.0f);
+			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin, 0.01f, 1.0f);
 			s_Data.TextVertexBufferPtr->Color = textParams.Color;
 			s_Data.TextVertexBufferPtr->TexCoord = texCoordMin;
 			s_Data.TextVertexBufferPtr++;
 
-			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
+			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin.x, quadMax.y, 0.01f, 1.0f);
 			s_Data.TextVertexBufferPtr->Color = textParams.Color;
 			s_Data.TextVertexBufferPtr->TexCoord = { texCoordMin.x, texCoordMax.y };
 			s_Data.TextVertexBufferPtr++;
 
-			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
+			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax, 0.01f, 1.0f);
 			s_Data.TextVertexBufferPtr->Color = textParams.Color;
 			s_Data.TextVertexBufferPtr->TexCoord = texCoordMax;
 			s_Data.TextVertexBufferPtr++;
 
-			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
+			s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax.x, quadMin.y, 0.01f, 1.0f);
 			s_Data.TextVertexBufferPtr->Color = textParams.Color;
 			s_Data.TextVertexBufferPtr->TexCoord = { texCoordMax.x, texCoordMin.y };
 			s_Data.TextVertexBufferPtr++;
@@ -498,11 +586,12 @@ namespace DawnStar
 			}
 			
 		}
+		#pragma endregion
     }
 
     void Renderer2D::DrawString(const glm::mat4 &transform, const TextComponent &component)
     {
-		DrawString(component.TextString, component.FontAsset, transform, {component.Color, component.Kerning, component.LineSpacing});
+		DrawString(component.TextString, component.FontAsset, transform, {component.Color, component.Kerning, component.LineSpacing, component.FontSize, component.Align});
 	}
 
 	void Renderer2D::ResetStats()

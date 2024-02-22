@@ -128,4 +128,41 @@ namespace DawnStar
 
         ImGui::PopID();
     }
+
+    void ImGuiUI::DrawFloatControl(const std::string& label, float* value, const float minValue, const float maxValue, 
+                                 const float speed, float resetValue, float columnWidth)
+    {
+        ImGuiIO& io = ImGui::GetIO();
+        auto boldFont = io.Fonts->Fonts[0];
+        
+        ImGui::PushID(label.c_str());
+
+        ImGui::Columns(2);
+        ImGui::SetColumnWidth(0, columnWidth);
+        ImGui::Text(label.c_str());
+        ImGui::NextColumn();
+
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+        float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+        ImVec2 buttonSize = { lineHeight * 2 + 3.0f, lineHeight };
+
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.55f, 0.3f, 0.75f, 1.0f });
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.65f, 0.4f, 0.85f, 1.0f });
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.55f, 0.3f, 0.75f, 1.0f });
+        ImGui::PushFont(boldFont);
+        if (ImGui::Button("Val", buttonSize))
+            *value = resetValue;
+        ImGui::PopFont();
+        ImGui::PopStyleColor(3);
+
+        ImGui::SameLine();
+        ImGui::DragFloat("##Value", value, speed, minValue, maxValue, "%.3f");
+        
+        ImGui::PopStyleVar();
+        ImGui::Columns(1);
+
+        ImGui::PopID();
+
+    }
 } // namespace DawnStar::UI

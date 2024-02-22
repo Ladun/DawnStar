@@ -34,4 +34,5 @@
 #include <DawnStar/Renderer/Texture.hpp>
 #include <DawnStar/Renderer/VertexArray.hpp>
 
+#include <DawnStar/Renderer/Font.hpp>
 #include <DawnStar/Renderer/Camera.hpp>

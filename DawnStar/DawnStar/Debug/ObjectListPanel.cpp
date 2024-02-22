@@ -170,11 +170,15 @@ namespace DawnStar
 			glm::vec3 rotation = glm::degrees(component.Rotation);
 			DawnStar::ImGuiUI::DrawVec3Control("Rotation", rotation);
 			component.Rotation = glm::radians(rotation);
-			DawnStar::ImGuiUI::DrawVec3Control("Scale", component.Scale, 1.0f);
 
 			if(entity.HasComponent<UI::LayoutComponent>())
 			{
+				DawnStar::ImGuiUI::DrawVec3Control("Size", component.Scale, 1.0f);
 				ImGui::Text("Controlled by UI::Layout");
+			}
+			else
+			{				
+				DawnStar::ImGuiUI::DrawVec3Control("Scale", component.Scale, 1.0f);
 			}
 		});
 		
@@ -199,8 +203,67 @@ namespace DawnStar
 		{
 			ImGui::InputTextMultiline("Text", &component.TextString);
 			ImGui::ColorEdit4("Color", glm::value_ptr(component.Color));	
-			ImGui::DragFloat("Kerning", &component.Kerning, 0.1f, 0.0f, 100.0f);
-			ImGui::DragFloat("LineSpacing", &component.LineSpacing, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("Kerning", &component.Kerning, 0.1f, -10.0f, 10.0f);
+			ImGui::DragFloat("LineSpacing", &component.LineSpacing, 0.1f, -10.0f, 10.0f);
+			ImGui::DragFloat("FontSize", &component.FontSize, 0.1f, 0.0f, 100.0f);
+			
+			const char* hItems[] = {"Left", "Center", "Right"};
+			static const char* hCurItem = NULL;
+			if(component.Align & 0b0000'0001)
+				hCurItem = hItems[0];
+			else if(component.Align & 0b0000'0010)
+				hCurItem = hItems[1];
+			else if(component.Align & 0b0000'0100)
+				hCurItem = hItems[2];
+			if(ImGui::BeginCombo("##halign", hCurItem))
+			{
+				for (int n = 0; n < IM_ARRAYSIZE(hItems); n++)
+				{
+					bool isSelected = (hCurItem == hItems[n]);
+					if (ImGui::Selectable(hItems[n], isSelected))
+					{
+						hCurItem = hItems[n];
+						if(n == 0)
+							component.SetHorizontalLeft();
+						else if(n == 1)
+							component.SetHorizontalCenter();
+						else if(n == 2)
+							component.SetHorizontalRight();
+					}
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			
+			const char* vItems[] = {"Top", "Center", "Bottom"};
+			static const char* vCurItem = NULL;
+			if(component.Align & 0b0000'1000)
+				vCurItem = vItems[0];
+			else if(component.Align & 0b0001'0000)
+				vCurItem = vItems[1];
+			else if(component.Align & 0b0010'0000)
+				vCurItem = vItems[2];
+			if(ImGui::BeginCombo("##valign", vCurItem))
+			{
+				for (int n = 0; n < IM_ARRAYSIZE(vItems); n++)
+				{
+					bool isSelected = (vCurItem == vItems[n]);
+					if (ImGui::Selectable(vItems[n], isSelected))
+					{
+						vCurItem = vItems[n];
+						if(n == 0)
+							component.SetVerticalTop();
+						else if(n == 1)
+							component.SetVerticalCenter();
+						else if(n == 2)
+							component.SetVerticalBottom();
+					}
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
 		});
 		
 
@@ -229,29 +292,34 @@ namespace DawnStar
 			DawnStar::ImGuiUI::DrawVec2Control("Pivot", component.Pivot, 
 											   {0.0f, 0.0f}, {1.0f, 1.0f}, 0.01f);
 			
-			ImGui::DragFloat("Rotation", &component.Rotation, 0.1f, 0.0f, 0.0f);
+			ImGui::Spacing();
+			DawnStar::ImGuiUI::DrawFloatControl("Rotation", &component.Rotation, 0.0f, 0.0f);
+			DawnStar::ImGuiUI::DrawVec3Control("Scale", component.Scale);
+			ImGui::Checkbox("Interactable", &component.Interactable);
 			ImGui::Spacing();
 
 			if(component.AnchorMin.x == component.AnchorMax.x)
 			{	
-				ImGui::DragFloat("X", &component.Box.x, 0.1f, 0.0f, 0.0f);
-				ImGui::DragFloat("Width", &component.Box.z, 0.1f, 0.0f, 0.0f);
+				DawnStar::ImGuiUI::DrawFloatControl("X", &component.Box.x, 0.0f, 0.0f);
+				DawnStar::ImGuiUI::DrawFloatControl("Width", &component.Box.z, 0.0f, 0.0f);
 			}
 			else
 			{
-				ImGui::DragFloat("Left", &component.Box.x, 0.1f, 0.0f, 0.0f);
-				ImGui::DragFloat("Right", &component.Box.z, 0.1f, 0.0f, 0.0f);
+				DawnStar::ImGuiUI::DrawFloatControl("Left", &component.Box.x, 0.0f, 0.0f);
+				DawnStar::ImGuiUI::DrawFloatControl("Right", &component.Box.z, 0.0f, 0.0f);
 			}							   
 			if(component.AnchorMin.y == component.AnchorMax.y)
 			{	
-				ImGui::DragFloat("Y", &component.Box.y, 0.1f, 0.0f, 0.0f);
-				ImGui::DragFloat("Height", &component.Box.w, 0.1f, 0.0f, 0.0f);
+				DawnStar::ImGuiUI::DrawFloatControl("Y", &component.Box.y, 0.0f, 0.0f);
+				DawnStar::ImGuiUI::DrawFloatControl("Height", &component.Box.w, 0.0f, 0.0f);
 			}
 			else
 			{
-				ImGui::DragFloat("Top", &component.Box.y, 0.1f, 0.0f, 0.0f);
-				ImGui::DragFloat("Bottom", &component.Box.w, 0.1f, 0.0f, 0.0f);
+				DawnStar::ImGuiUI::DrawFloatControl("Top", &component.Box.y, 0.0f, 0.0f);
+				DawnStar::ImGuiUI::DrawFloatControl("Bottom", &component.Box.w, 0.0f, 0.0f);
 			}
+			
+			ImGui::Text("_size: (%.3f, %.3f)", component._size.x, component._size.y);		
 		});
 
 		DrawComponent<UI::ButtonComponent>("UI Button", entity, [](auto& component)

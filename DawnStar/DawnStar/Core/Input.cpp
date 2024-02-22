@@ -12,6 +12,7 @@ namespace DawnStar
 {
     InputState Input::_keyState;
     InputState Input::_mouseState;
+    unsigned int Input::_currentKeyCode;
     
     bool Input::IsKey(const KeyCode key)
     {

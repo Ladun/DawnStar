@@ -2,16 +2,14 @@
 
 #include <DawnStar/DawnStar.hpp>
 #include <DawnStar/Debug/RenderStatPanel.hpp>
+#include <DawnStar/Debug/ObjectListPanel.hpp>
+
+using namespace DawnStar;
 
 namespace UIExample
 {
-	
-	struct CustomComponent
-	{
-		uint32_t value1;
-	};
 
-	class ExampleLayer : public DawnStar::Layer
+	class ExampleLayer : public Layer
 	{
 	public:
 		ExampleLayer();
@@ -20,16 +18,16 @@ namespace UIExample
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 
-		void OnUpdate(DawnStar::Timestep ts) override;
+		void OnUpdate(Timestep ts) override;
 		virtual void OnImGuiRender() override;
-		void OnEvent(DawnStar::Event& e) override;
+		void OnEvent(Event& e) override;
 
 	private:
-		DawnStar::RenderStatPanel m_StatPanel;
+		RenderStatPanel _statPanel;
+		ObjectListPanel _listPanel;
 
-		DawnStar::Ref<DawnStar::Scene> m_Scene;
+		Ref<Scene> _scene;
 
-		DawnStar::Entity m_TestEntity;
-		DawnStar::Entity m_TestEntity2;
+		Entity _testEntity;
 	};
 }

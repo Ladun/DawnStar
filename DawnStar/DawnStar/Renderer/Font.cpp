@@ -23,6 +23,9 @@ namespace DawnStar
         generator.generate(glyphs.data(), (int)glyphs.size());
 
         msdfgen::BitmapConstRef<T, N> bitmap = (msdfgen::BitmapConstRef<T, N>)generator.atlasStorage();
+#if 1        
+        msdfgen::savePng(bitmap, "output.png");
+#endif
 
         TextureSpecification spec;
         spec.Width = width;
@@ -56,7 +59,8 @@ namespace DawnStar
 
         static const CharsetRange charsetRanges[] =
 		{
-			{ 0x0020, 0x00FF }
+			{ 0x0020, 0x00FF },
+            { 0xAC00, 0xD7A3 }
 		};
 
         msdf_atlas::Charset charset;
@@ -69,7 +73,7 @@ namespace DawnStar
         double fontScale = 1.0;
 		_data->FontGeometry = msdf_atlas::FontGeometry(&_data->Glyphs);
 		int glyphsLoaded = _data->FontGeometry.loadCharset(font, fontScale, charset);
-		DS_CORE_INFO("Loaded {} glyphs from font (out of {})", glyphsLoaded, charset.size());
+		DS_CORE_INFO("Loaded {} glyphs from font ({})(out of {})", glyphsLoaded, charset.size(), filepath);
 
         double emSize = 40.0;
 
@@ -111,22 +115,6 @@ namespace DawnStar
         }
 
         _atlasTexture = CreateAndCacheAtlas<uint8_t, float, 3, msdf_atlas::msdfGenerator>("Test", (float)emSize, _data->Glyphs, _data->FontGeometry, width, height);
-
-#if 0
-		msdfgen::Shape shape;
-		if (msdfgen::loadGlyph(shape, font, 'C'))
-		{
-			shape.normalize();
-			//                      max. angle
-			msdfgen::edgeColoringSimple(shape, 3.0);
-			//           image width, height
-			msdfgen::Bitmap<float, 3> msdf(32, 32);
-			//                     range, scale, translation
-			msdfgen::generateMSDF(msdf, shape, 4.0, 1.0, msdfgen::Vector2(4.0, 4.0));
-			msdfgen::savePng(msdf, "output.png");
-            DS_CORE_DEBUG("Save atlas as 'output.png'");
-		}
-#endif
 
 		msdfgen::destroyFont(font);
 		msdfgen::deinitializeFreetype(ft);

@@ -63,28 +63,31 @@ namespace DawnStar
 	{
 
 	public:
-		static bool IsKey(KeyCode keycode);
-    	static bool IsKeyDown(const KeyCode key);
-    	static bool IsKeyUp(const KeyCode key);
+		static bool 		IsKey(KeyCode keycode);
+    	static bool 		IsKeyDown(const KeyCode key);
+    	static bool 		IsKeyUp(const KeyCode key);
 
-		static bool IsMouseButton(MouseCode button);
-		static bool IsMouseButtonDown(MouseCode button);
-		static bool IsMouseButtonUp(MouseCode button);
+		static bool 		IsMouseButton(MouseCode button);
+		static bool 		IsMouseButtonDown(MouseCode button);
+		static bool 		IsMouseButtonUp(MouseCode button);
 
-		static glm::vec2 GetMousePosition();
-		static void SetMousePosition(const glm::vec2& position);
+		static glm::vec2 	GetMousePosition();
+		static void 		SetMousePosition(const glm::vec2& position);
 
-		static float GetMouseX() { return GetMousePosition().x; }
-		static float GetMouseY() { return GetMousePosition().y; }
+		static float 		GetMouseX() 						{ return GetMousePosition().x; }
+		static float 		GetMouseY() 						{ return GetMousePosition().y; }
 
+		static unsigned int GetKeyCode()						{ return _currentKeyCode; }
+		static void 		SetKeyCode(unsigned int keyCode) 	{ _currentKeyCode = keyCode; }
 	public:
-		static void OnUpdate();
-		static void SetUpKey(KeyCode key, bool pressed);
-		static void SetUpMouse(MouseCode key, bool pressed);
+		static void 		OnUpdate();
+		static void 		SetUpKey(KeyCode key, bool pressed);
+		static void 		SetUpMouse(MouseCode key, bool pressed);
 
 	private:
 		static InputState _keyState;
 		static InputState _mouseState;
+		static unsigned int _currentKeyCode;
 
 	};
 }

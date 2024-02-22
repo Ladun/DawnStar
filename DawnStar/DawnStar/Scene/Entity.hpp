@@ -111,7 +111,9 @@ namespace DawnStar
 			const auto& rc = GetRelationship();
 			const Entity parent = _scene->GetEntity(rc.Parent);
 			const glm::mat4 parentTransform = parent ? parent.GetWorldTransform() : glm::mat4(1.0f);
-			return parentTransform * glm::translate(glm::mat4(1.0f), transform.Translation) * glm::toMat4(glm::quat(transform.Rotation)) * glm::scale(glm::mat4(1.0f), transform.Scale);
+			return parentTransform * glm::translate(glm::mat4(1.0f), transform.Translation) * 
+									 glm::toMat4(glm::quat(transform.Rotation)) * 
+									 glm::scale(glm::mat4(1.0f), transform.Scale);
 		}
 
 		[[nodiscard]] glm::mat4 GetLocalTransform() const
@@ -119,7 +121,42 @@ namespace DawnStar
 			DS_PROFILE_SCOPE()
 
 			const auto& transform = GetTransform();
-			return glm::translate(glm::mat4(1.0f), transform.Translation) * glm::toMat4(glm::quat(transform.Rotation)) * glm::scale(glm::mat4(1.0f), transform.Scale);
+			return glm::translate(glm::mat4(1.0f), transform.Translation) * 
+				   glm::toMat4(glm::quat(transform.Rotation)) * 
+				   glm::scale(glm::mat4(1.0f), transform.Scale);
+		}
+
+		[[nodiscard]] glm::mat4 GetUIWorldTransform() const
+		{
+			DS_PROFILE_SCOPE()
+
+			const auto& transform = GetTransform();
+			const auto& layout = GetComponent<UI::LayoutComponent>();
+			const auto& rc = GetRelationship();
+			const Entity parent = _scene->GetEntity(rc.Parent);
+			const glm::mat4 parentTransform = parent ? parent.GetUIWorldTransform() : glm::mat4(1.0f);
+			
+			// Scaling of UI object size only requires executing the lowest object.
+			// So we add 'rc.Children.size() > 0' at the end
+			return parentTransform * glm::translate(glm::mat4(1.0f), transform.Translation) * 
+									 glm::toMat4(glm::quat(transform.Rotation)) * 
+									 glm::translate(glm::mat4(1.0f), glm::vec3((0.5f - layout.Pivot.x) * transform.Scale.x,
+																			   (0.5f - layout.Pivot.y) * transform.Scale.y, 0.0f)) *
+				   					 glm::scale(glm::mat4(1.0f), transform.Scale);
+		}
+
+		[[nodiscard]] glm::mat4 GetUILocalTransform() const
+		{
+			DS_PROFILE_SCOPE()
+			const auto& transform = GetTransform();
+			const auto& layout = GetComponent<UI::LayoutComponent>();
+			// Calcuate pivot based rotation transform matrix
+			// mat = Translation * Rotation * PivotTranslation * Scale
+			return glm::translate(glm::mat4(1.0f), transform.Translation) * 
+				   glm::toMat4(glm::quat(transform.Rotation)) * 
+				   glm::translate(glm::mat4(1.0f), glm::vec3((0.5f - layout.Pivot.x) * transform.Scale.x,
+															 (0.5f - layout.Pivot.y) * transform.Scale.y, 0.0f)) *
+				   glm::scale(glm::mat4(1.0f), transform.Scale);
 		}
 
 		[[nodiscard]] Scene* GetScene() const { return _scene; }

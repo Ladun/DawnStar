@@ -3,9 +3,9 @@
 
 namespace BasicExample
 {
-    void TestSystem::OnUpdate(DawnStar::Timestep ts, entt::registry& registry)
+    void TestSystem::OnUpdate(Timestep ts, entt::registry& registry)
     {
-        const auto view = registry.view<DawnStar::TransformComponent, DawnStar::SpriteRendererComponent>();
+        const auto view = registry.view<TransformComponent, SpriteRendererComponent>();
         for(auto &&[entity, transform, sprite] : view.each())
         {
             float angle = glm::degrees(transform.Rotation.z);

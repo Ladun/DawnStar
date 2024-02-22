@@ -2,6 +2,8 @@
 
 #include <DawnStar/DawnStar.hpp>
 
+using namespace DawnStar;
+
 namespace BasicExample
 {
     class TestSystem : public DawnStar::SystemBase
