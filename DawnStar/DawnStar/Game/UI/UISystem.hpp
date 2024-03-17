@@ -18,7 +18,7 @@ namespace DawnStar::UI
         // Update position and size of ui object
         void UpdateLayoutSystem(Timestep ts, entt::registry& registry);
         // Search for interactable objects in the current frame
-        void UpdateInteractOjbect(Timestep ts, entt::registry& registry);
+        Entity UpdateInteractOjbect(Timestep ts, entt::registry& registry);
         // Interation with button
         void UpdateButtonSystem(Timestep ts, entt::registry& registry);
         // Update input texts

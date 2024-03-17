@@ -26,7 +26,8 @@ namespace DawnStar::UI
 
         UpdateLayoutSystem(ts, registry);
         // Reset state
-        if(_currentEntity)
+        auto ent = UpdateInteractOjbect(ts, registry);
+        if(_currentEntity && ent != _currentEntity)
         {
             if ( _currentEntity.HasComponent<UI::ButtonComponent>())
             {
@@ -46,8 +47,7 @@ namespace DawnStar::UI
                 caret.GetComponent<UI::SpriteRendererComponent>().Enable = false;
             }
         }
-
-        UpdateInteractOjbect(ts, registry);
+        _currentEntity = ent;
         UpdateButtonSystem(ts, registry);
         UpdateInputTextSystem(ts, registry);
     }
@@ -104,17 +104,17 @@ namespace DawnStar::UI
         }
     }
 
-    void UISystem::UpdateInteractOjbect(Timestep ts, entt::registry &registry)
+    Entity UISystem::UpdateInteractOjbect(Timestep ts, entt::registry &registry)
     {
 		DS_PROFILE_SCOPE();
         const auto view = registry.view<TransformComponent, UI::LayoutComponent>();
-        _currentEntity = Entity();
+        Entity curEntity = Entity();
 
         // Find interacted object
         auto mousePos = ToScreenCoord(Input::GetMousePosition());
         if (mousePos.x < 0 || mousePos.x >= Application::Get().GetWindow().GetWidth() || 
             mousePos.y < 0 || mousePos.y >= Application::Get().GetWindow().GetHeight())
-            return;
+            return curEntity;
 
         mousePos.x -= Application::Get().GetWindow().GetWidth() / 2;
         mousePos.y -= Application::Get().GetWindow().GetHeight() / 2;
@@ -143,10 +143,11 @@ namespace DawnStar::UI
 
                 // TODO: sorting components in other code
                 
-                _currentEntity = ent;
+                curEntity = ent;
                 break;
             }
         }
+        return curEntity;
     }
 
     void UISystem::UpdateButtonSystem(DawnStar::Timestep ts, entt::registry &registry)
