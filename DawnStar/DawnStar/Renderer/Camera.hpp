@@ -42,6 +42,8 @@ namespace DawnStar
 		void RecalculateProjection();
 
 	private:
+		friend class ObjectListPanel;
+
 		ProjectionType _projectionType = ProjectionType::Perspective;
 
 		glm::mat4 _projection = glm::mat4(1.0f);

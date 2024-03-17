@@ -181,6 +181,46 @@ namespace DawnStar
 				DawnStar::ImGuiUI::DrawVec3Control("Scale", component.Scale, 1.0f);
 			}
 		});
+
+		DrawComponent<CameraComponent>("Camera", entity, [entity](auto& component)
+		{
+			const char* items[] = {"Perspective", "Orthographic"};
+			static const char* curItem = component.Cam._projectionType == Camera::ProjectionType::Perspective? items[0]: items[1];
+			if(ImGui::BeginCombo("##Projection Type", curItem))
+			{
+				for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+				{
+					bool isSelected = (curItem == items[n]);
+					if (ImGui::Selectable(items[n], isSelected))
+					{
+						curItem = items[n];
+						if(n == 0)
+							component.Cam.SetProjectionType(Camera::ProjectionType::Perspective);
+						else if(n == 1)
+							component.Cam.SetProjectionType(Camera::ProjectionType::Orthographic);
+					}
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+
+			if(component.Cam._projectionType == Camera::ProjectionType::Perspective)
+			{
+				float degree = glm::degrees(component.Cam._perspectiveFOV);
+				DawnStar::ImGuiUI::DrawFloatControl("FOV", &degree, 0.0f, 100.0f);
+				component.Cam._perspectiveFOV = glm::radians(degree);
+				DawnStar::ImGuiUI::DrawFloatControl("Near", &component.Cam._perspectiveNear, 0.001f, component.Cam._perspectiveFar);
+				DawnStar::ImGuiUI::DrawFloatControl("Far", &component.Cam._perspectiveFar, component.Cam._perspectiveNear, 1000.0f);
+			}
+			else
+			{
+				DawnStar::ImGuiUI::DrawFloatControl("Size", &component.Cam._orthographicSize, 0.0f, 100.0f);
+				DawnStar::ImGuiUI::DrawFloatControl("Near", &component.Cam._orthographicNear, -100.0f, component.Cam._orthographicFar);
+				DawnStar::ImGuiUI::DrawFloatControl("Far", &component.Cam._orthographicFar, component.Cam._orthographicNear, 100.0f);
+			}
+		});
+		
 		
 
 		DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)

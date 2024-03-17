@@ -168,6 +168,7 @@ namespace DawnStar
 		operator uint32_t() const { return static_cast<uint32_t>(_entityHandle); }
 
 		bool operator==(const Entity& other) const { return _entityHandle == other._entityHandle && _scene == other._scene; }
+		bool operator!=(const Entity& other) const { return _entityHandle != other._entityHandle || _scene != other._scene; }
         
 	private:
 		entt::entity _entityHandle = entt::null;
