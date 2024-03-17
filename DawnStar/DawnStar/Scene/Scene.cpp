@@ -182,15 +182,6 @@ namespace DawnStar
 					Renderer2D::DrawQuad(Entity(entity, this).GetWorldTransform(), sprite.Texture, sprite.Color, sprite.TilingFactor);
 				}
 			}
-			
-			// Draw text
-			{
-				const auto view = _registry.view<TextComponent>(entt::exclude<UI::LayoutComponent>);
-				for (auto &&[entity, text] : view.each())
-				{
-					Renderer2D::DrawString(Entity(entity, this).GetWorldTransform(), text);
-				}
-			}
 		}
 		Renderer2D::EndScene();
 
@@ -224,7 +215,7 @@ namespace DawnStar
 						continue;		
 
 					// Text rendering does not require size (including width and height) scaling.
-					Renderer2D::DrawString(Entity(entity, this).GetUIWorldTransform(), text);
+					Renderer2D::DrawString(Entity(entity, this).GetUIWorldTransform(), layout._size, text);
 				}
 			}
 		}
@@ -335,6 +326,9 @@ namespace DawnStar
 	void Scene::OnComponentAdded<UI::InputTextComponent>(Entity entity, UI::InputTextComponent& component)
 	{
 		DS_CORE_ASSERT(entity.HasComponent<TextComponent>(), "Doesn't have TextComponent");
+		
+		auto& layout = entity.GetComponent<UI::LayoutComponent>();
+		layout.Interactable = true;
 
 	}
 }

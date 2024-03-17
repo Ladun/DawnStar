@@ -87,6 +87,10 @@ namespace DawnStar
 		// 0000 0000
 		// [][] [bottom][centor][top] [right][centor][left]
 		uint8_t Align = 0b0000'1001; 
+
+		bool _updated = false; // TODO: 
+		float width, height; // TODO: TextSystem을 만들어서 TextString이 변경될 때마다 update
+
 		void SetHorizontalLeft()
 		{	
 			Align = (Align & 0b0011'1000) | 0b0000'0001; 
@@ -111,12 +115,16 @@ namespace DawnStar
 		{	
 			Align = (Align & 0b0000'0111) | 0b0010'0000; 
 		}
+
+
 	};
 
 	// UI Component
 	namespace UI
 	{
 		// RequireComponents [TransformComponent]
+		// TODO: 여기서 spriteRenderer같은 거는 위와 중복이 되니, LayoutComponent를 이용해서 
+		//       rendering할 때 projection만 바꾸는 방식으로 진행하자.
 		struct LayoutComponent : public BaseComponent
 		{
 			friend class UISystem;
@@ -138,17 +146,18 @@ namespace DawnStar
 			glm::vec2 _size;
 		};
 
-		struct InputTextComponent : public BaseComponent
-		{
-			
-		};
-
 		struct SpriteRendererComponent : public BaseComponent
 		{
 			glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
 			Ref<Texture2D> Texture = nullptr;
 			int32_t SortingOrder = 0;
 			float TilingFactor = 1.0f;
+		};
+
+		struct InputTextComponent : public BaseComponent
+		{
+			TextComponent text;
+			SpriteRendererComponent caret;
 		};
 
 		struct ButtonComponent : public BaseComponent

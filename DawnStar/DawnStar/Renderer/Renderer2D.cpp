@@ -389,7 +389,7 @@ namespace DawnStar
 		DrawLine(lineVertices[3], lineVertices[0], color);
 	}
 
-    void Renderer2D::DrawString(const std::string &string, Ref<Font> font, const glm::mat4 &transform, const TextParams &textParams)
+    void Renderer2D::DrawString(const std::string &string, Ref<Font> font, const glm::mat4 &transform, const glm::vec2 size, const TextParams &textParams)
     {
 		DS_PROFILE_SCOPE()
 		
@@ -399,15 +399,16 @@ namespace DawnStar
 
 		double fsScale = 1.0 / (metrics.ascenderY - metrics.descenderY) * textParams.FontSize;
 		double x = 0.0;
-		double y = -fsScale * metrics.lineHeight / 2;
+		double y = 0.0;
 
 		const float spaceGlyphsAdvance = fontGeometry.getGlyph(' ')->getAdvance();
 
 		// Calcuate full width and height	
 		#pragma region Calculate the full width and height of Text	
 		std::vector<double> widthOfEachColumn; 
-		double width = 0;
 		double height = 0;
+		double firstLineHeight = 0.0;
+		bool isFirstLine = true;
 		for(size_t i = 0; i < string.size(); i++)
 		{
 			char character = string[i];
@@ -419,6 +420,10 @@ namespace DawnStar
 				widthOfEachColumn.push_back(x);
 				x = 0;
 				y -= fsScale * metrics.lineHeight + textParams.LineSpacing;
+				if (isFirstLine)
+				{
+					isFirstLine = false;
+				} 
 				continue;
 			}
 
@@ -447,6 +452,15 @@ namespace DawnStar
 					glyph = fontGeometry.getGlyph('?');
 				if (!glyph)
 					return;
+				if(isFirstLine)
+				{
+					// TODO: 실제 글자의 높이를 알려고 헀는데, 아래 코드로는 lineHeight와 동일한 결과를 뱉음
+					// 	     실제 글자의 높이 찾기
+					double pl, pb, pr, pt;
+					glyph->getQuadPlaneBounds(pl, pb, pr, pt);
+					if(firstLineHeight < pt - pb)
+						firstLineHeight = pt - pb;
+				}
 
 				double advance = glyph->getAdvance();
 				if (i < string.size() - 1)
@@ -457,18 +471,16 @@ namespace DawnStar
 
 				x += fsScale * advance + textParams.Kerning;
 			}
-			if (x > width)
-				width = x;
 		}
 		widthOfEachColumn.push_back(x);
-		height = -y;
+		height = -y + firstLineHeight * fsScale ;
 
 		#pragma endregion
 
 		#pragma region Drawing text
 		// Drawing text
 		x = 0.0;
-		y = -fsScale * metrics.lineHeight / 2;
+		y = -firstLineHeight* fsScale ;
 		int lineIdx = 0;
 		for(size_t i = 0; i < string.size(); i++)
 		{
@@ -527,20 +539,28 @@ namespace DawnStar
 			// horizontal alignment
 			if(textParams.Align & 0b0000'0010) // center
 			{
-				adjustment.x = -(width - widthOfEachColumn[lineIdx]) / 2;
+				adjustment.x = -widthOfEachColumn[lineIdx] / 2;
 			}
 			else if(textParams.Align & 0b0000'0100) // right
 			{
-				adjustment.x = -(width - widthOfEachColumn[lineIdx]);
+				adjustment.x = size.x / 2 - widthOfEachColumn[lineIdx];
+			}
+			else if(textParams.Align & 0b0000'0001) // left
+			{
+				adjustment.x = -size.x / 2;
 			}
 			// vertical alignment
-			if(textParams.Align & 0b0001'0000) // center
+			if(textParams.Align & 0b0000'1000) // top
 			{
-				adjustment.y = height / 2;
+				adjustment.y = size.y / 2;
 			}
 			else if(textParams.Align & 0b0010'0000) // bottom
 			{
-				adjustment.y = height;
+				adjustment.y = -size.y / 2 + height;
+			}
+			else if(textParams.Align & 0b0001'0000) // center
+			{
+				adjustment.y = height / 2;
 			}
 			
 			quadMin *= fsScale, quadMax *= fsScale;
@@ -589,9 +609,9 @@ namespace DawnStar
 		#pragma endregion
     }
 
-    void Renderer2D::DrawString(const glm::mat4 &transform, const TextComponent &component)
+    void Renderer2D::DrawString(const glm::mat4 &transform, const glm::vec2 size, const TextComponent &component)
     {
-		DrawString(component.TextString, component.FontAsset, transform, {component.Color, component.Kerning, component.LineSpacing, component.FontSize, component.Align});
+		DrawString(component.TextString, component.FontAsset, transform, size, {component.Color, component.Kerning, component.LineSpacing, component.FontSize, component.Align});
 	}
 
 	void Renderer2D::ResetStats()

@@ -3,6 +3,7 @@
 #include <DawnStar/Game/Utils.hpp>
 #include <DawnStar/Scene/Scene.hpp>
 #include <DawnStar/Scene/Entity.hpp>
+#include <DawnStar/Scene/Components.hpp>
 #include <DawnStar/Core/Application.hpp>
 #include <DawnStar/Core/Input.hpp>
 #include "UISystem.hpp"
@@ -24,8 +25,31 @@ namespace DawnStar::UI
 
 
         UpdateLayoutSystem(ts, registry);
+        // Reset state
+        if(_currentEntity)
+        {
+            if ( _currentEntity.HasComponent<UI::ButtonComponent>())
+            {
+                auto& button = _currentEntity.GetComponent<UI::ButtonComponent>();
+                button._over = false;
+                button._press = false;
+                button._release = false;
+
+                auto& sprite = _currentEntity.GetComponent<UI::SpriteRendererComponent>();
+                sprite.Color = button.normalColor;
+            }
+            else if (_currentEntity.HasComponent<UI::InputTextComponent>())
+            {
+                auto text  =  _currentEntity.GetScene()->GetEntity(_currentEntity.GetRelationship().Children[0]);
+                auto caret =  _currentEntity.GetScene()->GetEntity(_currentEntity.GetRelationship().Children[2]);
+
+                caret.GetComponent<UI::SpriteRendererComponent>().Enable = false;
+            }
+        }
+
         UpdateInteractOjbect(ts, registry);
         UpdateButtonSystem(ts, registry);
+        UpdateInputTextSystem(ts, registry);
     }
 
     void UISystem::UpdateLayoutSystem(Timestep ts, entt::registry &registry)
@@ -84,23 +108,16 @@ namespace DawnStar::UI
     {
 		DS_PROFILE_SCOPE();
         const auto view = registry.view<TransformComponent, UI::LayoutComponent>();
-        
-        // Reset status
-        if(_currentEntity && _currentEntity.HasComponent<UI::ButtonComponent>())
-        {
-            auto& button = _currentEntity.GetComponent<UI::ButtonComponent>();
-            button._over = false;
-            button._press = false;
-            button._release = false;
-
-            auto& sprite = _currentEntity.GetComponent<UI::SpriteRendererComponent>();
-            sprite.Color = button.normalColor;
-        }
         _currentEntity = Entity();
-
 
         // Find interacted object
         auto mousePos = ToScreenCoord(Input::GetMousePosition());
+        if (mousePos.x < 0 || mousePos.x >= Application::Get().GetWindow().GetWidth() || 
+            mousePos.y < 0 || mousePos.y >= Application::Get().GetWindow().GetHeight())
+            return;
+
+        mousePos.x -= Application::Get().GetWindow().GetWidth() / 2;
+        mousePos.y -= Application::Get().GetWindow().GetHeight() / 2;
         for(auto &&[entity, transform, layout] : view.each())
         {
             if (layout.Enable == false)
@@ -109,10 +126,11 @@ namespace DawnStar::UI
             if (layout.Interactable == false)
                 continue;
 
-            float left = transform.Translation.x - layout.Pivot.x * transform.Scale.x;
-            float top = transform.Translation.y + (1 - layout.Pivot.y) * transform.Scale.y;
-            float right = transform.Translation.x + (1 - layout.Pivot.x) * transform.Scale.x;
-            float bottom = transform.Translation.y - layout.Pivot.y * transform.Scale.y;
+
+            float left = transform.Translation.x - layout.Pivot.x * layout._size.x;
+            float top = transform.Translation.y + (1 - layout.Pivot.y) * layout._size.y;
+            float right = transform.Translation.x + (1 - layout.Pivot.x) * layout._size.x;
+            float bottom = transform.Translation.y - layout.Pivot.y * layout._size.y;
             
             
             Entity ent = {entity, _scene.get()};
@@ -176,16 +194,30 @@ namespace DawnStar::UI
         //  blink
 
         if(_currentEntity && _currentEntity.HasComponent<UI::InputTextComponent>())
-        {        
-            _curBlinkTime += ts;
+        {   
+            auto& text =  _currentEntity.GetScene()->GetEntity(_currentEntity.GetRelationship().Children[0]).GetComponent<TextComponent>();
+            auto& caret =  _currentEntity.GetScene()->GetEntity(_currentEntity.GetRelationship().Children[2]).GetComponent<UI::SpriteRendererComponent>();
 
-            // updating text
-            // TODO: 이거 키코드 받는 방식을 나중에서는 OnEvent로 UISystem용으로 만들어서 하든지 해야할 듯.
-            if(Input::IsKey(Key::Any))
+            // Caret update
+            _curBlinkTime += ts;
+            if(_curBlinkTime > _blinkTime * 2)
+                _curBlinkTime -= _blinkTime * 2;
+
+            if(_curBlinkTime > _blinkTime)
+                caret.Enable = true;
+            else
+                caret.Enable = false;            
+
+
+            // Text update
+            // TODO: 텍스트를 입력받아서 처리하는 방식을 아래쳐럼 GetKeycode가 아닌, 
+            //       Layer처럼 OnEvent로 키의 입력이 왔을 때 추가하는 방식으로 하는게 더 깔끔할 듯.
+            // TODO: 텍스트 더하고 지우는 기능, caret 위치 조정하는거 추가
+            if(Input::IsKeyDown(Key::Any))
             {
                 auto keyCode = Input::GetKeyCode();
 
-                
+                text.TextString += keyCode;
             }
 
         }

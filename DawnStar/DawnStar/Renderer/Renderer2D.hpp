@@ -42,8 +42,8 @@ namespace DawnStar
 			float FontSize = 1.0f;
 			uint8_t Align;
 		};
-		static void DrawString(const std::string& string, Ref<Font> font, const glm::mat4& transform, const TextParams& textParams);
-		static void DrawString(const glm::mat4& transform, const TextComponent& component);
+		static void DrawString(const std::string& string, Ref<Font> font, const glm::mat4& transform, const glm::vec2 size, const TextParams& textParams);
+		static void DrawString(const glm::mat4& transform, const glm::vec2 size, const TextComponent& component);
 
 		// Stats
 		struct Statistics

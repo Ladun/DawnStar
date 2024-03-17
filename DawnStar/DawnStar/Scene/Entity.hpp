@@ -102,6 +102,8 @@ namespace DawnStar
 			}
 			transform.Parent = 0;
 		}
+
+		// TODO: Gloab space에서의 x, y, z 좌표를 얻는 방법이 없음.
 		
 		[[nodiscard]] glm::mat4 GetWorldTransform() const
 		{

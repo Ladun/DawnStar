@@ -23,15 +23,15 @@ namespace DawnStar::UI
             ent.SetParent(entity);
 
             auto& layout = ent.AddComponent<UI::LayoutComponent>();
-            layout.AnchorMax = layout.AnchorMin = {0.0, 0.5};
             layout.Pivot = {0.5, 0.5};
-            // (x, y, w, h)
-            layout.Box = {0, 0, 1, 1};
+            // (l, t, r, b)
+            layout.Box = {0, 0, 0, 0};
 
             auto& text = ent.AddComponent<TextComponent>();
             text.FontSize = 32;
             text.Color = {1.0, 1.0, 1.0, 1.0};
             text.SetVerticalCenter();
+            text.TextString = "Hello";
 
         }
         { // Background 
@@ -40,7 +40,7 @@ namespace DawnStar::UI
 
             auto& layout = ent.AddComponent<UI::LayoutComponent>();
             layout.Pivot = {0.5, 0.5};
-            layout.Box = {0, 0, 0, 0};
+            layout.Box = {0, 5, 0, 5};
 
             auto& sprite = ent.AddComponent<UI::SpriteRendererComponent>();
             sprite.Color = {0.5, 0.5, 0.5, 1.0};
@@ -58,6 +58,7 @@ namespace DawnStar::UI
 
             auto& sprite = ent.AddComponent<UI::SpriteRendererComponent>();
             sprite.Color = {0.0, 0.0, 0.0, 1.0};
+            sprite.Enable = false;
         }
 
         return entity;
