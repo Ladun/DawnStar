@@ -1,0 +1,20 @@
+[submodule "DawnStar/third-party/glfw"]
+	path = DawnStar/third-party/glfw
+	url = https://github.com/glfw/glfw.git
+	branch = 3.3-stable
+[submodule "DawnStar/third-party/glm"]
+	path = DawnStar/third-party/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "DawnStar/third-party/imgui"]
+	path = DawnStar/third-party/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "DawnStar/third-party/optick"]
+	path = DawnStar/third-party/optick
+	url = https://github.com/bombomby/optick.git
+[submodule "DawnStar/third-party/msdf-atlas-gen"]
+	path = DawnStar/third-party/msdf-atlas-gen
+	url = https://github.com/TheCherno/msdf-atlas-gen
+[submodule "DawnStar/third-party/spdlog"]
+	path = DawnStar/third-party/spdlog
+	url = https://github.com/gabime/spdlog
+	branch = v1.x
